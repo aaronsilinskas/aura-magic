@@ -1,4 +1,5 @@
 import pytest
+from aura.aura import DamageEvent, HealEvent
 from conftest import AuraFixture
 
 
@@ -18,7 +19,8 @@ def test_min_magic_limit(fixture: AuraFixture) -> None:
     aura = fixture.aura
 
     # Try to reduce current magic below min_magic
-    aura.alter_magic(-(aura.max_magic - aura.min_magic + 50.0))
+    damage_past_min = aura.current_magic - aura.min_magic + 50.0
+    aura.handle_event(DamageEvent(damage_past_min))
 
     # Current magic should not be allowed to go below min_magic
     assert aura.current_magic == aura.min_magic
@@ -28,7 +30,8 @@ def test_max_magic_limit(fixture: AuraFixture) -> None:
     aura = fixture.aura
 
     # Try to exceed max magic limit
-    aura.alter_magic(50.0)
+    heal_past_max = aura.max_magic * 10
+    aura.handle_event(HealEvent(heal_past_max))
 
     # Current should not exceed max magic
     assert aura.current_magic == aura.max_magic

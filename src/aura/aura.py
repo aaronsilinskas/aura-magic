@@ -12,8 +12,21 @@ class Spell:
 
 
 class AuraEvent:
-    
-    pass
+
+    def __init__(self) -> None:
+        self.cancelled: bool = False
+
+
+class DamageEvent(AuraEvent):
+    def __init__(self, amount: float) -> None:
+        super().__init__()
+        self.amount = amount
+
+
+class HealEvent(AuraEvent):
+    def __init__(self, amount: float) -> None:
+        super().__init__()
+        self.amount = amount
 
 
 class Aura:
@@ -27,9 +40,23 @@ class Aura:
     def add_spell(self, spell: Spell) -> None:
         self._spells.append(spell)
 
-    def alter_magic(self, delta: float) -> None:
-        """Update current magic by delta amount (positive to increase, negative to decrease), clamped to min/max."""
-        self._current_magic = max(self._min_magic, min(self._current_magic + delta, self._max_magic))
+    def handle_event(self, event: AuraEvent) -> None:
+        for spell in self._spells:
+            spell.modify_event(self, event)
+            if event.cancelled:
+                return
+
+        self._apply_event(event)
+
+    def _apply_event(self, event: AuraEvent) -> None:
+        if isinstance(event, DamageEvent):
+            self._current_magic -= event.amount
+        elif isinstance(event, HealEvent):
+            self._current_magic += event.amount
+
+        self._current_magic = max(
+            self._min_magic, min(self._current_magic, self._max_magic)
+        )
 
     def update(self, elapsed_time: float) -> None:
         spells_to_keep = []

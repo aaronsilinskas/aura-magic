@@ -1,4 +1,4 @@
-from .aura import Spell, Aura
+from .aura import DamageEvent, HealEvent, Spell, Aura
 
 
 class AmbientMagicRegenSpell(Spell):
@@ -7,7 +7,9 @@ class AmbientMagicRegenSpell(Spell):
         self.amount_per_second: float = amount_per_second
 
     def update(self, aura: Aura, ellapsed_time: float) -> bool:
-        aura.alter_magic(self.amount_per_second * ellapsed_time)
+        heal_amount = self.amount_per_second * ellapsed_time
+        aura.handle_event(HealEvent(heal_amount))
+
         return False  # Don't remove this spell
 
 
@@ -23,7 +25,7 @@ class IgniteSpell(Spell):
             damage = self.damage_per_second * min(
                 ellapsed_time, self.duration - self.elapsed
             )
-            aura.alter_magic(-damage)
+            aura.handle_event(DamageEvent(damage))
             self.elapsed += ellapsed_time
 
         return self.elapsed >= self.duration
@@ -35,5 +37,6 @@ class AirSliceSpell(Spell):
         self.damage = damage
 
     def update(self, aura: Aura, ellapsed_time: float) -> bool:
-        aura.alter_magic(-self.damage)
+        aura.handle_event(DamageEvent(self.damage))
+
         return True  # Remove after one application

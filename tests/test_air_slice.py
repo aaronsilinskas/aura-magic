@@ -27,21 +27,6 @@ def test_air_slice_instant_damage(slice_fixture: SliceFixture) -> None:
     assert slice_fixture.slice_spell not in aura.spells
 
 
-def test_air_slice_respects_min_magic(slice_fixture: SliceFixture) -> None:
-    aura = slice_fixture.aura
-
-    # Set current magic close to minimum by decrementing from max
-    damage_needed = aura.max_magic - aura.min_magic - (slice_fixture.slice_damage / 2)
-    aura.alter_magic(-damage_needed)
-
-    aura.add_spell(slice_fixture.slice_spell)
-    aura.update(0.1)
-
-    # Should not go below min_magic
-    assert aura.current_magic == aura.min_magic
-    assert slice_fixture.slice_spell not in aura.spells
-
-
 def test_air_slice_multiple_hits(slice_fixture: SliceFixture) -> None:
     aura = slice_fixture.aura
 

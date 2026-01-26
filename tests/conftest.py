@@ -1,6 +1,7 @@
 import random
 
 from aura import Aura
+from aura.aura import DamageEvent
 
 
 class AuraFixture:
@@ -10,4 +11,4 @@ class AuraFixture:
         self.aura: Aura = Aura(min_magic=self.min_magic, max_magic=self.max_magic)
 
     def set_starting_magic(self, value: float) -> None:
-        self.aura.alter_magic(value - self.aura.current_magic)
+        self.aura.handle_event(DamageEvent(self.aura.current_magic - value))
