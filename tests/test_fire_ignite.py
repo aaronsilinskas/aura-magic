@@ -36,7 +36,7 @@ def test_fire_ignite_full_damage(ignite_fixture: IgniteFixture) -> None:
 
 def test_fire_ignite_partial_damage(ignite_fixture: IgniteFixture) -> None:
     aura = ignite_fixture.aura
-    partial_duration = ignite_fixture.ignite_duration // 2
+    partial_duration = ignite_fixture.ignite_duration / 2
 
     aura.add_spell(ignite_fixture.ignite_spell)
     # Simulate part of the ignite duration passing

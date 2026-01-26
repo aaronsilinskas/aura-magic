@@ -6,9 +6,9 @@ class Spell:
         """Update the spell. Return True if the spell should be removed from the aura."""
         raise NotImplementedError()
 
-    def modify_event(self, aura: Aura, event: AuraEvent) -> bool:
-        """Modify an incoming event. Return True if the spell should be removed from the aura."""
-        return False
+    def modify_event(self, aura: Aura, event: AuraEvent) -> None:
+        """Modify an incoming event if needed."""
+        pass
 
 
 class AuraEvent:

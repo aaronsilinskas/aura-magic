@@ -1,37 +1,6 @@
 import pytest
-from aura.aura import Aura, AuraEvent, Spell
-from aura.spells import AirSliceSpell
+from aura.spells import EarthShieldSpell, AirSliceSpell
 from conftest import AuraFixture
-
-
-# class EarthShieldModifier(SpellModifier):
-#     """Modifier that reduces incoming damage by 75% for a number of hits or duration."""
-
-#     def modify_damage(self, damage: float) -> float:
-#         if self.hits_remaining > 0:
-#             self.hits_remaining -= 1
-#             return damage * 0.25  # Reduce damage by 75%
-#         return damage
-
-#     def update(self, ellapsed_time: float) -> bool:
-#         self.duration_remaining -= ellapsed_time
-#         return self.duration_remaining <= 0 or self.hits_remaining <= 0
-
-
-class EarthShieldSpell(Spell):
-    """Resists incoming damage for a number of hits or duration."""
-
-    def __init__(self, reduction: float) -> None:
-        super().__init__()
-        self.reduction = reduction
-
-    def update(self, aura: Aura, ellapsed_time: float) -> bool:
-
-        return False
-
-    def modify_event(self, aura: Aura, event: AuraEvent) -> bool:
-
-        return False
 
 
 class EarthShieldFixture(AuraFixture):
@@ -57,8 +26,8 @@ def test_earth_shield_resistance(shield_fixture: EarthShieldFixture) -> None:
     aura.add_spell(shield_fixture.damage_spell)
     aura.update(0.1)  # Trigger damage
 
-    assert aura.current_magic == aura.max_magic - (
-        shield_fixture.damage_after_shield * 2
+    assert aura.current_magic == pytest.approx(
+        aura.max_magic - (shield_fixture.damage_after_shield * 2)
     )
 
 

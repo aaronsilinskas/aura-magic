@@ -1,4 +1,4 @@
-from .aura import DamageEvent, HealEvent, Spell, Aura
+from .aura import DamageEvent, HealEvent, Spell, Aura, AuraEvent
 
 
 class AmbientMagicRegenSpell(Spell):
@@ -40,3 +40,19 @@ class AirSliceSpell(Spell):
         aura.handle_event(DamageEvent(self.damage))
 
         return True  # Remove after one application
+
+
+class EarthShieldSpell(Spell):
+    """Resists incoming damage for a number of hits or duration."""
+
+    def __init__(self, reduction: float) -> None:
+        super().__init__()
+        self.reduction = max(0, min(reduction, 1))
+
+    def update(self, aura: Aura, ellapsed_time: float) -> bool:
+
+        return False
+
+    def modify_event(self, aura: Aura, event: AuraEvent) -> None:
+        if isinstance(event, DamageEvent):
+            event.amount *= 1 - self.reduction
