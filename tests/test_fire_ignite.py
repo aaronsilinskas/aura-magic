@@ -39,14 +39,15 @@ def test_fire_ignite_full_damage(ignite_fixture: IgniteFixture) -> None:
 def test_fire_ignite_partial_damage(ignite_fixture: IgniteFixture) -> None:
     aura = ignite_fixture.aura
     partial_duration = ignite_fixture.ignite_duration / 2
+    partial_damage = (
+        ignite_fixture.total_damage * partial_duration / ignite_fixture.ignite_duration
+    )
 
     aura.add_spell(ignite_fixture.ignite_spell)
     # Simulate part of the ignite duration passing
     aura.update(partial_duration)
 
     # only part of total damage should be applied
-    assert aura.magic.value == aura.magic.max - (
-        ignite_fixture.total_damage * partial_duration / ignite_fixture.ignite_duration
-    )
+    assert aura.magic.value == pytest.approx(aura.magic.max - partial_damage)
     # Spell should still be active
     assert ignite_fixture.ignite_spell in aura.spells
