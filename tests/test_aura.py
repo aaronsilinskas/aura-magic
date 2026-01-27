@@ -119,16 +119,3 @@ def test_remove_spell_calls_stop(fixture: AuraFixture) -> None:
     aura.remove_spell(test_spell)
 
     assert test_spell.stopped is True
-
-
-# Spell casting a debuff spell - *Ice shield* - adds 50% resistance, shatters after 3 hits
-# Cast delay adjustment -  *Freeze* - increase delay between spellcasts
-# Increases HealEvent -  *Charge* - increase magic regen speed
-# | *Shock* - slows magic regen speed
-# | *Flash* - temporarily turn all displays white
-# | *Shadow* - hides currently selected spell
-# Need spell tags to support filtering - *Vulnerable* - removes shields or amplifies next hit
-# | *Continue* - remove Pause
-# Greatly increase cast delay | *Pause* - blocks casting of caster and targets for a short duration |
-# How to intercept an entire spell before combo etc? | *Absorb* - absorbs the next debuff spell
-# Add custom event (movement) | *Weight* - any movement causes damage                               |
