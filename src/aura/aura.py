@@ -34,9 +34,17 @@ class HealEvent(AuraEvent):
 
 class Aura:
 
-    def __init__(self, min_magic: float, max_magic: float) -> None:
+    def __init__(self, min_magic: float, max_magic: float, cast_delay: float) -> None:
+        """Initialize the Aura with magic bounds and cast delay.
+
+        Args:
+            min_magic: The minimum value the magic attribute can reach.
+            max_magic: The maximum value the magic attribute can reach.
+            cast_delay: The base cast delay in seconds.
+        """
         self.magic = MinMaxValue(value=max_magic, min=min_magic, max=max_magic)
         self._spells: list[Spell] = []
+        self._cast_delay: float = cast_delay
 
     def add_spell(self, spell: Spell) -> None:
         self._spells.append(spell)
@@ -56,12 +64,13 @@ class Aura:
             self.magic.value += event.amount
 
     def update(self, elapsed_time: float) -> None:
-        spells_to_keep = []
+        spells_to_remove = []
         for spell in self._spells:
             should_remove = spell.update(self, elapsed_time)
-            if not should_remove:
-                spells_to_keep.append(spell)
-        self._spells = spells_to_keep
+            if should_remove:
+                spells_to_remove.append(spell)
+        for spell in spells_to_remove:
+            self._spells.remove(spell)
 
     @property
     def spells(self) -> list[Spell]:
