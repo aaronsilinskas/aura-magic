@@ -45,14 +45,25 @@ class AirSliceSpell(Spell):
 class EarthShieldSpell(Spell):
     """Resists incoming damage for a number of hits or duration."""
 
-    def __init__(self, reduction: float) -> None:
+    def __init__(self, reduction: float, max_hits: int, duration: float) -> None:
         super().__init__()
         self.reduction = max(0, min(reduction, 1))
+        self.max_hits = max_hits
+        self.hits_taken = 0
+        self.duration = duration
+        self.elapsed = 0.0
 
     def update(self, aura: Aura, ellapsed_time: float) -> bool:
+        self.elapsed += ellapsed_time
+        if self._expired():
+            return True  # Remove the spell
 
         return False
 
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
-        if isinstance(event, DamageEvent):
+        if isinstance(event, DamageEvent) and not self._expired():
             event.amount *= 1 - self.reduction
+            self.hits_taken += 1
+
+    def _expired(self) -> bool:
+        return self.hits_taken >= self.max_hits or self.elapsed >= self.duration

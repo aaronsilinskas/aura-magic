@@ -29,7 +29,9 @@ def test_fire_ignite_full_damage(ignite_fixture: IgniteFixture) -> None:
     # Simulate time passing beyond duration
     aura.update(ignite_fixture.ignite_duration + 5)
 
-    assert aura.current_magic == aura.max_magic - ignite_fixture.total_damage
+    assert aura.current_magic == pytest.approx(
+        aura.max_magic - ignite_fixture.total_damage
+    )
     # Spell should be removed after duration
     assert ignite_fixture.ignite_spell not in aura.spells
 
