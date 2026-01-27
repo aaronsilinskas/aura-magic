@@ -81,6 +81,14 @@ def test_remove_triggers_callback(mock_callback):
     assert mock_callback.call_count == 2
 
 
+def test_remove_nonexistent_modifier(mock_callback):
+    """Test that removing a nonexistent modifier does not raise an error."""
+    mgr = ValueModifiers(mock_callback)
+    modifier = ValueModifier(1.0, 1.0)
+
+    mgr.remove(modifier)
+
+
 def test_update_no_expiry(mock_callback):
     """Test that update does not remove modifiers or trigger callback if none expire."""
     mgr = ValueModifiers(mock_callback)
@@ -134,3 +142,14 @@ def test_update_mixed_expiry(mock_callback):
     assert mgr.modifiers == [modifier2]
     # once for each add, then once for removal
     assert mock_callback.call_count == 3
+
+
+def test_no_callback_provided():
+    """Test that ValueModifiers works without a callback."""
+    mgr = ValueModifiers()
+
+    modifier = ValueModifier(1.0, 0.1)
+    mgr.add(modifier)
+    mgr.update(0.2)
+
+    assert len(mgr.modifiers) == 0

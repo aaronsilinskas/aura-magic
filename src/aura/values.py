@@ -46,7 +46,7 @@ class ValueModifier:
 class ValueModifiers:
     """Manages a collection of ValueModifiers and notifies a callback when the list changes."""
 
-    def __init__(self, modifiers_changed: Callable) -> None:
+    def __init__(self, modifiers_changed: Callable | None = None) -> None:
         """Initializes the manager with a callback for list changes.
 
         Args:
@@ -55,6 +55,10 @@ class ValueModifiers:
         self._modifiers: list[ValueModifier] = []
         self._modifiers_changed = modifiers_changed
 
+    def _notify_modifiers_changed(self) -> None:
+        if self._modifiers_changed:
+            self._modifiers_changed()
+
     def add(self, modifier: ValueModifier) -> None:
         """Adds a modifier to the list and triggers the callback.
 
@@ -62,7 +66,7 @@ class ValueModifiers:
             modifier: The modifier to add.
         """
         self._modifiers.append(modifier)
-        self._modifiers_changed()
+        self._notify_modifiers_changed()
 
     def remove(self, modifier: ValueModifier) -> None:
         """Removes a modifier from the list and triggers the callback.
@@ -70,8 +74,9 @@ class ValueModifiers:
         Args:
             modifier: The modifier to remove.
         """
-        self._modifiers.remove(modifier)
-        self._modifiers_changed()
+        if modifier in self._modifiers:
+            self._modifiers.remove(modifier)
+            self._notify_modifiers_changed()
 
     def update(self, elapsed_time: float) -> None:
         """Updates all modifiers, removing expired ones and triggering the callback if changes occurred.
@@ -89,7 +94,7 @@ class ValueModifiers:
             self._modifiers.remove(modifier)
 
         if len(modifiers_to_remove) > 0:
-            self._modifiers_changed()
+            self._notify_modifiers_changed()
 
     def modify(self, base_value: float) -> float:
         """Applies all active modifiers to a base value.
