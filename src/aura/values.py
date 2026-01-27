@@ -106,6 +106,11 @@ class ValueModifiers:
 
         return modified_value
 
+    @property
+    def modifiers(self) -> list[ValueModifier]:
+        """Returns the list of current modifiers."""
+        return self._modifiers
+
 
 class MinMaxValue:
     """A value clamped between a minimum and a dynamic maximum."""
