@@ -11,4 +11,4 @@ class AuraFixture:
         self.aura: Aura = Aura(min_magic=self.min_magic, max_magic=self.max_magic)
 
     def set_starting_magic(self, value: float) -> None:
-        self.aura.handle_event(DamageEvent(self.aura.current_magic - value))
+        self.aura.handle_event(DamageEvent(self.aura.magic.value - value))

@@ -15,7 +15,7 @@ class EarthShieldFixture(AuraFixture):
             max_hits=self.max_hits,
             duration=self.duration,
         )
-        self.damage = self.aura.max_magic / 2  # Damage 1/2 of magic
+        self.damage = self.aura.magic.max / 2  # Damage 1/2 of magic
         self.damage_spell = AirSliceSpell(damage=self.damage)
         self.damage_after_shield = self.damage * (1 - self.damage_reduction)
 
@@ -33,8 +33,8 @@ def test_earth_shield_resistance(shield_fixture: EarthShieldFixture) -> None:
     aura.add_spell(shield_fixture.damage_spell)
     aura.update(0.1)  # Trigger damage
 
-    assert aura.current_magic == pytest.approx(
-        aura.max_magic - (shield_fixture.damage_after_shield * 2)
+    assert aura.magic.value == pytest.approx(
+        aura.magic.max - (shield_fixture.damage_after_shield * 2)
     )
 
 

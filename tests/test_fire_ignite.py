@@ -10,7 +10,7 @@ class IgniteFixture(AuraFixture):
 
         self.ignite_duration: float = random.uniform(3.0, 6.0)
         # burn half of max magic over the duration
-        self.total_damage = self.aura.max_magic / 2
+        self.total_damage = self.aura.magic.max / 2
         self.ignite_dps: float = self.total_damage / self.ignite_duration
         self.ignite_spell: IgniteSpell = IgniteSpell(
             damage_per_second=self.ignite_dps, duration=self.ignite_duration
@@ -29,8 +29,8 @@ def test_fire_ignite_full_damage(ignite_fixture: IgniteFixture) -> None:
     # Simulate time passing beyond duration
     aura.update(ignite_fixture.ignite_duration + 5)
 
-    assert aura.current_magic == pytest.approx(
-        aura.max_magic - ignite_fixture.total_damage
+    assert aura.magic.value == pytest.approx(
+        aura.magic.max - ignite_fixture.total_damage
     )
     # Spell should be removed after duration
     assert ignite_fixture.ignite_spell not in aura.spells
@@ -45,7 +45,7 @@ def test_fire_ignite_partial_damage(ignite_fixture: IgniteFixture) -> None:
     aura.update(partial_duration)
 
     # only part of total damage should be applied
-    assert aura.current_magic == aura.max_magic - (
+    assert aura.magic.value == aura.magic.max - (
         ignite_fixture.total_damage * partial_duration / ignite_fixture.ignite_duration
     )
     # Spell should still be active
