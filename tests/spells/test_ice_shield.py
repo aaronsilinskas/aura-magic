@@ -1,0 +1,90 @@
+import random
+import pytest
+from aura.spells import IceShieldSpell, AirSliceSpell, FreezeSpell
+from conftest import AuraFixture
+
+
+class IceShieldFixture(AuraFixture):
+    def __init__(self) -> None:
+        super().__init__()
+        self.damage_reduction = 0.50  # 50% damage reduction
+        self.max_hits = random.randint(3, 5)
+        self.duration = round(random.uniform(5.0, 10.0))
+        self.shield_spell = IceShieldSpell(
+            reduction=self.damage_reduction,
+            max_hits=self.max_hits,
+            duration=self.duration,
+        )
+        self.damage = self.aura.magic.max / 2  # Damage 1/2 of magic
+        self.damage_spell = AirSliceSpell(damage=self.damage)
+        self.damage_after_shield = self.damage * (1 - self.damage_reduction)
+
+
+@pytest.fixture
+def shield_fixture() -> IceShieldFixture:
+    return IceShieldFixture()
+
+
+def test_ice_shield_resistance(shield_fixture: IceShieldFixture) -> None:
+    aura = shield_fixture.aura
+
+    aura.add_spell(shield_fixture.shield_spell)
+    aura.add_spell(shield_fixture.damage_spell)
+    aura.add_spell(shield_fixture.damage_spell)
+    aura.update(0.1)  # Trigger damage
+
+    assert aura.magic.value == pytest.approx(
+        aura.magic.max - (shield_fixture.damage_after_shield * 2)
+    )
+
+
+def test_ice_shield_expiry_by_hits(shield_fixture: IceShieldFixture) -> None:
+    aura = shield_fixture.aura
+
+    aura.add_spell(shield_fixture.shield_spell)
+
+    # Apply damage equal to shield hits
+    for _ in range(shield_fixture.max_hits):
+        aura.add_spell(shield_fixture.damage_spell)
+        aura.update(0.1)  # Trigger damage
+
+    # Final update to process removals
+    aura.update(0.1)
+
+    assert (
+        shield_fixture.shield_spell not in aura.spells
+    ), "Ice Shield should expire after max_hits"
+
+
+def test_ice_shield_no_resistance_after_expiry(
+    shield_fixture: IceShieldFixture,
+) -> None:
+    aura = shield_fixture.aura
+
+    aura.add_spell(shield_fixture.shield_spell)
+
+    # Ellapse time past duration to expire shield
+    aura.update(shield_fixture.duration + 1)
+
+    assert (
+        shield_fixture.shield_spell not in aura.spells
+    ), "Ice Shield should expire after duration"
+
+
+# TODO LEFT OFF HERE
+
+
+def test_ice_shield_casts_freeze_on_max_hits(shield_fixture: IceShieldFixture) -> None:
+    aura = shield_fixture.aura
+
+    aura.add_spell(shield_fixture.shield_spell)
+
+    # Apply damage equal to shield hits
+    for _ in range(shield_fixture.max_hits):
+        aura.add_spell(shield_fixture.damage_spell)
+        aura.update(0.1)  # Trigger damage
+
+    # Final update to process freeze spell
+    aura.update(0.1)
+
+    # TODO check that Freeze spell was cast
