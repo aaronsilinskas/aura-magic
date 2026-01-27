@@ -111,10 +111,13 @@ class ValueModifiers:
 
         return modified_value
 
-    @property
-    def modifiers(self) -> list[ValueModifier]:
-        """Returns the list of current modifiers."""
-        return self._modifiers
+    def __len__(self) -> int:
+        """Returns the number of active modifiers."""
+        return len(self._modifiers)
+
+    def __iter__(self):
+        """Returns an iterator over the active modifiers."""
+        return iter(self._modifiers)
 
 
 class MinMaxValue:
@@ -136,6 +139,14 @@ class MinMaxValue:
     def _clamp_value(self) -> None:
         """Clamps the current value between min and max."""
         self._value = max(self.min, min(self._value, self.max))
+
+    def update(self, elapsed_time: float) -> None:
+        """Updates the maximum modifiers.
+
+        Args:
+            elapsed_time: The time passed since the last update.
+        """
+        self._max_modifier.update(elapsed_time)
 
     @property
     def value(self) -> float:

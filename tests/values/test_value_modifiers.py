@@ -46,7 +46,7 @@ def test_add(mock_callback):
 
     mgr.add(modifier)
 
-    assert mgr.modifiers == [modifier]
+    assert list(mgr) == [modifier]
 
 
 def test_add_triggers_callback(mock_callback):
@@ -66,7 +66,7 @@ def test_remove(mock_callback):
     mgr.add(modifier)
     mgr.remove(modifier)
 
-    assert len(mgr.modifiers) == 0
+    assert len(mgr) == 0
 
 
 def test_remove_triggers_callback(mock_callback):
@@ -97,7 +97,7 @@ def test_update_no_expiry(mock_callback):
     mgr.add(modifier)
     mgr.update(0.5)
 
-    assert mgr.modifiers == [modifier]
+    assert list(mgr) == [modifier]
     assert mock_callback.call_count == 1  # only called on add
 
 
@@ -109,7 +109,7 @@ def test_update_expiry(mock_callback):
     mgr.add(modifier)
     mgr.update(0.2)
 
-    assert len(mgr.modifiers) == 0
+    assert len(mgr) == 0
     # once for add, once for removal
     assert mock_callback.call_count == 2
 
@@ -124,7 +124,7 @@ def test_update_multiple_expiry(mock_callback):
     mgr.add(modifier2)
     mgr.update(0.3)
 
-    assert len(mgr.modifiers) == 0
+    assert len(mgr) == 0
     # once for each add, then only once no matter how many were removed
     assert mock_callback.call_count == 3
 
@@ -139,7 +139,7 @@ def test_update_mixed_expiry(mock_callback):
     mgr.add(modifier2)
     mgr.update(0.2)
 
-    assert mgr.modifiers == [modifier2]
+    assert list(mgr) == [modifier2]
     # once for each add, then once for removal
     assert mock_callback.call_count == 3
 
@@ -152,4 +152,4 @@ def test_no_callback_provided():
     mgr.add(modifier)
     mgr.update(0.2)
 
-    assert len(mgr.modifiers) == 0
+    assert len(mgr) == 0
