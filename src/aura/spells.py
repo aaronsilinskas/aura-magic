@@ -180,3 +180,13 @@ class VulnerableSpell(DurationSpell):
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
         if not self.shield_spells_removed and isinstance(event, DamageEvent):
             event.amount *= self.damage_multiplier
+
+
+class ChargeSpell(DurationSpell):
+    def __init__(self, healing_multiplier: float, duration: float) -> None:
+        super().__init__([SpellTags.BUFF], duration)
+        self.healing_multiplier = healing_multiplier
+
+    def modify_event(self, aura: Aura, event: AuraEvent) -> None:
+        if isinstance(event, HealEvent):
+            event.amount *= self.healing_multiplier
