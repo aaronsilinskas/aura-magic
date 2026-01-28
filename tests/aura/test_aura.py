@@ -1,5 +1,5 @@
 import pytest
-from aura.aura import DamageEvent, HealEvent
+from aura.aura import Aura, AuraEvent, DamageEvent, HealEvent, Spell, SpellTags
 from aura.values import ValueModifier
 from conftest import AuraFixture
 
@@ -58,3 +58,91 @@ def test_update_triggers_cast_delay_update(fixture: AuraFixture) -> None:
     aura.update(1.0)
 
     assert len(aura.cast_delay_modifiers) == 0
+
+
+def test_handle_event_applies_damage_event(fixture: AuraFixture) -> None:
+    aura = fixture.aura
+    initial_magic = aura.magic.value
+    damage_amount = 150.0
+
+    aura.handle_event(DamageEvent(damage_amount))
+
+    assert aura.magic.value == initial_magic - damage_amount
+
+
+def test_handle_event_applies_heal_event(fixture: AuraFixture) -> None:
+    aura = fixture.aura
+    fixture.set_starting_magic(fixture.max_magic / 2)
+    initial_magic = aura.magic.value
+    heal_amount = fixture.max_magic / 4  # heal by 25%
+
+    aura.handle_event(HealEvent(heal_amount))
+
+    assert aura.magic.value == initial_magic + heal_amount
+
+
+def test_handle_event_cancellation(fixture: AuraFixture) -> None:
+    aura = fixture.aura
+    initial_magic = aura.magic.value
+    damage_amount = 200.0
+
+    class CancelingSpell(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[])
+
+        def modify_event(self, aura: Aura, event: AuraEvent) -> None:
+            event.is_canceled = True
+
+    aura.add_spell(CancelingSpell())
+
+    aura.handle_event(DamageEvent(damage_amount))
+
+    assert aura.magic.value == initial_magic  # Magic value should remain unchanged
+
+
+def test_get_spells_by_name(fixture: AuraFixture) -> None:
+    aura = fixture.aura
+
+    class InexorableDoomSpell(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[])
+
+    class AnotherSpell(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[])
+
+    test_spell = InexorableDoomSpell()
+    test_spell_2 = InexorableDoomSpell()
+
+    # Can have more than one of the same spell, so make sure both are returned
+    aura.add_spell(test_spell)
+    aura.add_spell(test_spell_2)
+    aura.add_spell(AnotherSpell())
+
+    spells_by_name = list(aura.spells.get_by_name(test_spell.name))
+
+    assert spells_by_name == [test_spell, test_spell_2]
+
+
+def test_get_spells_by_tag(fixture: AuraFixture) -> None:
+    aura = fixture.aura
+
+    class BuffSpell(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[SpellTags.BUFF])
+
+    class DebuffSpell(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[SpellTags.DEBUFF])
+
+    buff_spell = BuffSpell()
+    debuff_spell = DebuffSpell()
+
+    aura.add_spell(buff_spell)
+    aura.add_spell(debuff_spell)
+
+    buff_spells = list(aura.spells.get_by_tag(SpellTags.BUFF))
+    debuff_spells = list(aura.spells.get_by_tag(SpellTags.DEBUFF))
+
+    assert buff_spell in buff_spells
+    assert debuff_spell in debuff_spells

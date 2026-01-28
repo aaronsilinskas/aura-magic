@@ -16,14 +16,14 @@ def test_spell_name_normalization(fixture: AuraFixture) -> None:
     class SuperGiantSpell(Spell):
         pass
 
-    assert SuperGiantSpell().name == "SuperGiant"
+    assert SuperGiantSpell(tags=[]).name == "SuperGiant"
 
 
 class LifecycleTrackingSpell(Spell):
     """Tracks spell updates for testing purposes."""
 
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(tags=[])
         self.started = False
         self.update_elapsed_time = None
         self.stopped = False

@@ -1,13 +1,13 @@
 from aura.caster import Caster
 from aura.values import ValueModifier
-from .aura import DamageEvent, HealEvent, Spell, Aura, AuraEvent
+from .aura import DamageEvent, HealEvent, Spell, Aura, AuraEvent, SpellTags
 
 
 class DurationSpell(Spell):
     """A spell with a specific duration."""
 
-    def __init__(self, duration: float) -> None:
-        super().__init__()
+    def __init__(self, tags: list[str], duration: float) -> None:
+        super().__init__(tags)
         self._duration = duration
         self._elapsed = 0.0
 
@@ -38,7 +38,7 @@ class DurationSpell(Spell):
 
 class AmbientMagicRegenSpell(Spell):
     def __init__(self, amount_per_second: float) -> None:
-        super().__init__()
+        super().__init__([SpellTags.BUFF])
         self.amount_per_second: float = amount_per_second
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -50,7 +50,7 @@ class AmbientMagicRegenSpell(Spell):
 
 class IgniteSpell(DurationSpell):
     def __init__(self, damage_per_second: float, duration: float) -> None:
-        super().__init__(duration)
+        super().__init__([SpellTags.DEBUFF], duration)
         self.damage_per_second = damage_per_second
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -64,7 +64,7 @@ class IgniteSpell(DurationSpell):
 
 class AirSliceSpell(Spell):
     def __init__(self, damage: float) -> None:
-        super().__init__()
+        super().__init__([SpellTags.DEBUFF])
         self.damage = damage
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -77,7 +77,7 @@ class EarthShieldSpell(DurationSpell):
     """Resists incoming damage for a number of hits or duration."""
 
     def __init__(self, reduction: float, max_hits: int, duration: float) -> None:
-        super().__init__(duration)
+        super().__init__([SpellTags.BUFF, SpellTags.SHIELD], duration)
 
         self.reduction = max(0, min(reduction, 1))
         self.max_hits = max_hits
@@ -102,7 +102,7 @@ class FreezeSpell(DurationSpell):
     """Increases the delay between spell casts for a duration."""
 
     def __init__(self, duration: float, cast_delay_modifier: float) -> None:
-        super().__init__(duration)
+        super().__init__([SpellTags.DEBUFF], duration)
 
         self.cast_delay_modifier = cast_delay_modifier
         self._modifier = ValueModifier(self.cast_delay_modifier, duration=self.duration)
@@ -125,7 +125,7 @@ class IceShieldSpell(DurationSpell):
         freeze_spell: FreezeSpell,
         caster: Caster,
     ) -> None:
-        super().__init__(duration)
+        super().__init__([SpellTags.BUFF, SpellTags.SHIELD], duration)
 
         self.reduction = max(0, min(reduction, 1))
         self.max_hits = max_hits

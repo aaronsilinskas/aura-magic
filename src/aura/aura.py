@@ -4,8 +4,13 @@ from aura.values import MinMaxValue, ValueModifiers
 class Spell:
     """Base class for all spells."""
 
-    def __init__(self) -> None:
+    def __init__(self, tags: list[str]) -> None:
         self.name: str = self.__class__.__name__.replace("Spell", "")
+        self._tags: list[str] = tags
+
+    @property
+    def tags(self):
+        return iter(self._tags)
 
     def start(self, aura: "Aura") -> None:
         """Called when the spell is added to the aura. Can be used to set up initial state."""
@@ -22,6 +27,12 @@ class Spell:
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
         """Modify an incoming event if needed."""
         pass
+
+
+class SpellTags:
+    SHIELD = "SHIELD"
+    BUFF = "BUFF"
+    DEBUFF = "DEBUFF"
 
 
 class AuraEvent:
@@ -66,6 +77,10 @@ class Spells:
     def get_by_name(self, name: str) -> list[Spell]:
         """Finds a spell by its name."""
         return [spell for spell in self._spells if spell.name == name]
+
+    def get_by_tag(self, tag: str) -> list[Spell]:
+        """Finds spells by a specific tag."""
+        return [spell for spell in self._spells if tag in spell.tags]
 
     def __len__(self) -> int:
         return len(self._spells)
