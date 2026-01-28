@@ -1,5 +1,6 @@
 import random
 import pytest
+from aura.aura import DamageEvent
 from aura.spells import EarthShieldSpell, AirSliceSpell
 from conftest import AuraFixture
 
@@ -56,7 +57,7 @@ def test_earth_shield_expiry_by_hits(shield_fixture: EarthShieldFixture) -> None
     ), "Earth Shield should expire after max_hits"
 
 
-def test_earth_shield_no_resistance_after_expiry(
+def test_earth_shield_removed_after_expiry(
     shield_fixture: EarthShieldFixture,
 ) -> None:
     aura = shield_fixture.aura
@@ -69,3 +70,21 @@ def test_earth_shield_no_resistance_after_expiry(
     assert (
         shield_fixture.shield_spell not in aura.spells
     ), "Earth Shield should expire after duration"
+
+
+def test_earth_shield_no_resistance_after_expiry(
+    shield_fixture: EarthShieldFixture,
+) -> None:
+    aura = shield_fixture.aura
+
+    aura.add_spell(shield_fixture.shield_spell)
+
+    # Ellapse time past duration to expire shield
+    aura.update(shield_fixture.duration + 1)
+
+    event = DamageEvent(shield_fixture.damage)
+    aura.handle_event(event)
+
+    assert (
+        event.amount == shield_fixture.damage
+    ), "Damage should not be reduced after Earth Shield expiry"
