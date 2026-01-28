@@ -8,7 +8,7 @@ class IgniteFixture(AuraFixture):
     def __init__(self) -> None:
         super().__init__()
 
-        self.ignite_duration: float = random.uniform(3.0, 6.0)
+        self.ignite_duration: float = round(random.uniform(3.0, 6.0))
         # burn half of max magic over the duration
         self.total_damage = self.aura.magic.max / 2
         self.ignite_dps: float = self.total_damage / self.ignite_duration

@@ -9,7 +9,7 @@ class EarthShieldFixture(AuraFixture):
         super().__init__()
         self.damage_reduction = 0.75  # 75% damage reduction
         self.max_hits = random.randint(3, 5)
-        self.duration = random.uniform(5.0, 10.0)
+        self.duration = round(random.uniform(5.0, 10.0))
         self.shield_spell = EarthShieldSpell(
             reduction=self.damage_reduction,
             max_hits=self.max_hits,
