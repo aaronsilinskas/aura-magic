@@ -5,7 +5,7 @@ import random
 import pytest
 from aura.aura import DamageEvent, HealEvent, SpellTags
 from aura.spells import DurationSpell, VulnerableSpell
-from tests.conftest import AuraFixture
+from conftest import AuraFixture
 
 
 class VulnerableFixture(AuraFixture):

@@ -1,7 +1,7 @@
 import pytest
 from aura.aura import DamageEvent, HealEvent
 from aura.spells import ChargeSpell
-from tests.conftest import AuraFixture
+from conftest import AuraFixture
 
 
 class ChargeFixture(AuraFixture):

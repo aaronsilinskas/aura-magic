@@ -25,7 +25,7 @@ class Spell:
         pass
 
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
-        """Modify an incoming event if needed."""
+        """Modify an incoming event if needed, will only be called for active spells."""
         pass
 
 

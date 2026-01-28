@@ -1,6 +1,6 @@
 import pytest
 import random
-from aura import IgniteSpell
+from aura.spells import IgniteSpell
 from conftest import AuraFixture
 
 
