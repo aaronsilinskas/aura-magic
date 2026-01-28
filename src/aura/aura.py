@@ -2,8 +2,9 @@ from aura.values import MinMaxValue, ValueModifiers
 
 
 class Spell:
+    """Base class for all spells."""
+
     def __init__(self) -> None:
-        """Initializes the Spell. Sets the name based on the class name."""
         self.name: str = self.__class__.__name__.replace("Spell", "")
 
     def start(self, aura: "Aura") -> None:
@@ -23,42 +24,10 @@ class Spell:
         pass
 
 
-class DurationSpell(Spell):
-    def __init__(self, duration: float) -> None:
-        """Initializes a spell with a specific duration."""
-        super().__init__()
-        self._duration = duration
-        self._elapsed = 0.0
-
-    def update(self, aura: "Aura", elapsed_time: float) -> bool:
-        self._elapsed += elapsed_time
-        return self.is_expired
-
-    @property
-    def duration(self) -> float:
-        """The total duration of the spell."""
-        return self._duration
-
-    @property
-    def duration_elapsed(self) -> float:
-        """The time elapsed since the spell started."""
-        return self._elapsed
-
-    @property
-    def duration_remaining(self) -> float:
-        """The time remaining until the spell expires."""
-        return max(0.0, self._duration - self._elapsed)
-
-    @property
-    def is_expired(self) -> bool:
-        """Whether the spell has expired."""
-        return self._elapsed >= self._duration
-
-
 class AuraEvent:
+    """Base class for events affecting the aura."""
 
     def __init__(self) -> None:
-        """Initializes the AuraEvent."""
         self._canceled: bool = False
 
     @property
@@ -71,6 +40,8 @@ class AuraEvent:
 
 
 class DamageEvent(AuraEvent):
+    """Event representing damage taken."""
+
     def __init__(self, amount: float) -> None:
         """Initializes a damage event with a specific amount."""
         super().__init__()
@@ -78,10 +49,29 @@ class DamageEvent(AuraEvent):
 
 
 class HealEvent(AuraEvent):
+    """Event representing healing received."""
+
     def __init__(self, amount: float) -> None:
         """Initializes a heal event with a specific amount."""
         super().__init__()
         self.amount = max(0, amount)
+
+
+class Spells:
+    """A collection manager for Spell objects."""
+
+    def __init__(self, spells: list[Spell]) -> None:
+        self._spells: list[Spell] = spells
+
+    def get_by_name(self, name: str) -> list[Spell]:
+        """Finds a spell by its name."""
+        return [spell for spell in self._spells if spell.name == name]
+
+    def __len__(self) -> int:
+        return len(self._spells)
+
+    def __iter__(self):
+        return iter(self._spells)
 
 
 class Aura:
@@ -99,7 +89,8 @@ class Aura:
             cast_delay: The base cast delay in seconds.
         """
         self.magic = MinMaxValue(value=max_magic, min=min_magic, max=max_magic)
-        self._spells: list[Spell] = []
+        self._spell_list: list[Spell] = []
+        self._spells = Spells(self._spell_list)
         self._cast_delay_base: float = cast_delay
         self._cast_delay_modifiers: ValueModifiers = ValueModifiers()
 
@@ -109,7 +100,7 @@ class Aura:
         Args:
             spell: The spell to add.
         """
-        self._spells.append(spell)
+        self._spell_list.append(spell)
         spell.start(self)
 
     def remove_spell(self, spell: Spell) -> None:
@@ -118,7 +109,7 @@ class Aura:
         Args:
             spell: The spell to remove.
         """
-        self._spells.remove(spell)
+        self._spell_list.remove(spell)
         spell.stop(self)
 
     def handle_event(self, event: AuraEvent) -> None:
@@ -129,7 +120,7 @@ class Aura:
         Args:
             event: The incoming event to process.
         """
-        for spell in self._spells:
+        for spell in self.spells:
             spell.modify_event(self, event)
             if event.is_canceled:
                 return
@@ -157,16 +148,16 @@ class Aura:
         self._cast_delay_modifiers.update(elapsed_time)
 
         spells_to_remove = []
-        for spell in self._spells:
+        for spell in self.spells:
             should_remove = spell.update(self, elapsed_time)
             if should_remove:
                 spells_to_remove.append(spell)
         for spell in spells_to_remove:
-            self._spells.remove(spell)
+            self.remove_spell(spell)
 
     @property
-    def spells(self) -> list[Spell]:
-        """Returns the list of active spells."""
+    def spells(self) -> Spells:
+        """Returns the active spells collection."""
         return self._spells
 
     @property

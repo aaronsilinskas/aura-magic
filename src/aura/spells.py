@@ -1,6 +1,39 @@
 from aura.caster import Caster
 from aura.values import ValueModifier
-from .aura import DamageEvent, DurationSpell, HealEvent, Spell, Aura, AuraEvent
+from .aura import DamageEvent, HealEvent, Spell, Aura, AuraEvent
+
+
+class DurationSpell(Spell):
+    """A spell with a specific duration."""
+
+    def __init__(self, duration: float) -> None:
+        super().__init__()
+        self._duration = duration
+        self._elapsed = 0.0
+
+    def update(self, aura: "Aura", elapsed_time: float) -> bool:
+        self._elapsed += elapsed_time
+        return self.is_expired
+
+    @property
+    def duration(self) -> float:
+        """The total duration of the spell."""
+        return self._duration
+
+    @property
+    def duration_elapsed(self) -> float:
+        """The time elapsed since the spell started."""
+        return self._elapsed
+
+    @property
+    def duration_remaining(self) -> float:
+        """The time remaining until the spell expires."""
+        return max(0.0, self._duration - self._elapsed)
+
+    @property
+    def is_expired(self) -> bool:
+        """Whether the spell has expired."""
+        return self._elapsed >= self._duration
 
 
 class AmbientMagicRegenSpell(Spell):
