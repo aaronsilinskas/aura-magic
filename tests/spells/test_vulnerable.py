@@ -1,5 +1,3 @@
-# Need spell tags to support filtering - *Vulnerable* - removes shields or amplifies next hit
-
 import random
 
 import pytest

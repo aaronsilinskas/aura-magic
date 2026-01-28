@@ -1,7 +1,7 @@
 import random
 
 import pytest
-from aura.aura import Aura, DamageEvent, Spell
+from aura.aura import Aura, Spell
 from conftest import AuraFixture
 
 

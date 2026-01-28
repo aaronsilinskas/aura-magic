@@ -1,7 +1,5 @@
 import pytest
-from aura.aura import Aura, Spell
 from aura.spells import FreezeSpell
-from aura.values import ValueModifier
 from conftest import AuraFixture
 
 

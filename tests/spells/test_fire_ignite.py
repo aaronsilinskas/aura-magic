@@ -51,3 +51,14 @@ def test_fire_ignite_partial_damage(ignite_fixture: IgniteFixture) -> None:
     assert aura.magic.value == pytest.approx(aura.magic.max - partial_damage)
     # Spell should still be active
     assert ignite_fixture.ignite_spell in aura.spells
+
+
+def test_fire_ignite_no_damage_after_duration(ignite_fixture: IgniteFixture) -> None:
+    aura = ignite_fixture.aura
+
+    aura.add_spell(ignite_fixture.ignite_spell)
+    # Simulate time passing beyond duration
+    aura.update(ignite_fixture.ignite_duration + 10)
+
+    # All damage applied over duration should be appied, but no more
+    assert aura.magic.value == aura.magic.max - ignite_fixture.total_damage

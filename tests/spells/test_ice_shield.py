@@ -62,7 +62,7 @@ def test_ice_shield_expiry_by_hits(shield_fixture: IceShieldFixture) -> None:
     ), "Ice Shield should expire after max_hits"
 
 
-def test_ice_shield_no_resistance_after_expiry(
+def test_ice_shield_removed_after_expiry(
     shield_fixture: IceShieldFixture,
 ) -> None:
     aura = shield_fixture.aura
