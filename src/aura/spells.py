@@ -1,4 +1,4 @@
-from aura.caster import Caster
+from aura.caster import CastType, Caster
 from aura.values import ValueModifier
 from .aura import DamageEvent, HealEvent, Spell, Aura, AuraEvent, SpellTags
 
@@ -159,7 +159,9 @@ class IceShieldSpell(DurationSpell):
             return  # Already cast
         self._freeze_cast = True
 
-        self._caster.cast_spell(self._freeze_spell)
+        self._caster.cast_spell(
+            self._freeze_spell, cast_type=CastType.AREA_OF_EFFECT
+        )  # Cast type can be arbitrary here
 
 
 class VulnerableSpell(DurationSpell):

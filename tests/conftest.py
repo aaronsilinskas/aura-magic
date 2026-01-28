@@ -20,9 +20,21 @@ class AuraFixture:
         self.aura.handle_event(DamageEvent(self.aura.magic.value - value))
 
 
+class CapturedSpell:
+    def __init__(self, spell: Spell, cast_type: str) -> None:
+        self.spell = spell
+        self.cast_type = cast_type
+
+
 class SpellTrackingCaster(Caster):
     def __init__(self) -> None:
-        self.cast_spells = []
+        self.cast_spells: list[CapturedSpell] = []
 
-    def cast_spell(self, spell: Spell) -> None:
-        self.cast_spells.append(spell)
+    def cast_spell(self, spell: Spell, cast_type: str) -> None:
+        self.cast_spells.append(CapturedSpell(spell, cast_type))
+
+    def was_cast(self, spell: Spell, cast_type: str) -> bool:
+        return any(
+            captured.spell == spell and captured.cast_type == cast_type
+            for captured in self.cast_spells
+        )

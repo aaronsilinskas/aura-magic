@@ -1,5 +1,6 @@
 import random
 import pytest
+from aura.caster import CastType
 from aura.spells import IceShieldSpell, AirSliceSpell, FreezeSpell
 from conftest import AuraFixture, SpellTrackingCaster
 
@@ -90,9 +91,9 @@ def test_ice_shield_casts_freeze_on_max_hits(shield_fixture: IceShieldFixture) -
     # Final update to process freeze spell
     aura.update(0.1)
 
-    assert shield_fixture.caster.cast_spells == [
-        shield_fixture.freeze_spell
-    ], "Ice Shield should cast Freeze spell when max_hits exceeded"
+    assert shield_fixture.caster.was_cast(
+        shield_fixture.freeze_spell, CastType.AREA_OF_EFFECT
+    ), "Ice Shield should cast Freeze spell when max_hits exceeded"
 
 
 def test_ice_shield_no_freeze_before_max_hits(shield_fixture: IceShieldFixture) -> None:
