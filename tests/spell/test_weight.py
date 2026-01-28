@@ -39,11 +39,11 @@ def test_weight_applies_damage_on_movement(fixture: WeightFixture) -> None:
     # Simulate acceleration event above threshold
     aura.handle_event(fixture.accel_above_threshold_event)
 
-    # Update the aura for 1 second
-    aura.update(1.0)
+    # Update the aura for 0.5 seconds
+    aura.update(0.5)
 
     # Check that damage was applied
-    assert aura.magic.value == initial_magic - fixture.damage_per_second
+    assert aura.magic.value == initial_magic - fixture.damage_per_second * 0.5
 
 
 def test_weight_no_damage_below_threshold(fixture: WeightFixture) -> None:
