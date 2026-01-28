@@ -1,7 +1,8 @@
 import random
 
 from aura import Aura
-from aura.aura import DamageEvent
+from aura.aura import DamageEvent, Spell
+from aura.caster import Caster
 
 
 class AuraFixture:
@@ -17,3 +18,11 @@ class AuraFixture:
 
     def set_starting_magic(self, value: float) -> None:
         self.aura.handle_event(DamageEvent(self.aura.magic.value - value))
+
+
+class SpellTrackingCaster(Caster):
+    def __init__(self) -> None:
+        self.cast_spells = []
+
+    def cast_spell(self, spell: Spell) -> None:
+        self.cast_spells.append(spell)

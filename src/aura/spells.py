@@ -1,3 +1,4 @@
+from aura.caster import Caster
 from aura.values import ValueModifier
 from .aura import DamageEvent, DurationSpell, HealEvent, Spell, Aura, AuraEvent
 
@@ -83,13 +84,23 @@ class FreezeSpell(DurationSpell):
 class IceShieldSpell(DurationSpell):
     """Resists incoming damage for a number of hits or duration. Casts Freeze when max hits exceeded."""
 
-    def __init__(self, reduction: float, max_hits: int, duration: float) -> None:
+    def __init__(
+        self,
+        reduction: float,
+        max_hits: int,
+        duration: float,
+        freeze_spell: FreezeSpell,
+        caster: Caster,
+    ) -> None:
         super().__init__(duration)
 
         self.reduction = max(0, min(reduction, 1))
         self.max_hits = max_hits
+        self._freeze_spell = freeze_spell
+        self._caster = caster
+
         self.hits_taken = 0
-        self.freeze_cast = False
+        self._freeze_cast = False
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
         if super().update(aura, elapsed_time):
@@ -111,8 +122,8 @@ class IceShieldSpell(DurationSpell):
             self.hits_taken += 1
 
     def _cast_freeze(self, aura: Aura) -> None:
-        if self.freeze_cast:
+        if self._freeze_cast:
             return  # Already cast
-        self.freeze_cast = True
+        self._freeze_cast = True
 
-        # TODO Cast the Freeze spell
+        self._caster.cast_spell(self._freeze_spell)
