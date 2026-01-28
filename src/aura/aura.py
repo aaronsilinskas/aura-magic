@@ -22,22 +22,57 @@ class Spell:
         pass
 
 
+class DurationSpell(Spell):
+    def __init__(self, duration: float) -> None:
+        super().__init__()
+        self._duration = duration
+        self._elapsed = 0.0
+
+    def update(self, aura: "Aura", elapsed_time: float) -> bool:
+        self._elapsed += elapsed_time
+        return self.is_expired
+
+    @property
+    def duration(self) -> float:
+        return self._duration
+
+    @property
+    def duration_elapsed(self) -> float:
+        return self._elapsed
+
+    @property
+    def duration_remaining(self) -> float:
+        return max(0.0, self._duration - self._elapsed)
+
+    @property
+    def is_expired(self) -> bool:
+        return self._elapsed >= self._duration
+
+
 class AuraEvent:
 
     def __init__(self) -> None:
-        self.cancelled: bool = False
+        self._canceled: bool = False
+
+    @property
+    def is_canceled(self) -> bool:
+        return self._canceled
+
+    @is_canceled.setter
+    def is_canceled(self, value: bool) -> None:
+        self._canceled = value
 
 
 class DamageEvent(AuraEvent):
     def __init__(self, amount: float) -> None:
         super().__init__()
-        self.amount = amount
+        self.amount = max(0, amount)
 
 
 class HealEvent(AuraEvent):
     def __init__(self, amount: float) -> None:
         super().__init__()
-        self.amount = amount
+        self.amount = max(0, amount)
 
 
 class Aura:
@@ -66,7 +101,7 @@ class Aura:
     def handle_event(self, event: AuraEvent) -> None:
         for spell in self._spells:
             spell.modify_event(self, event)
-            if event.cancelled:
+            if event.is_canceled:
                 return
 
         self._apply_event(event)
