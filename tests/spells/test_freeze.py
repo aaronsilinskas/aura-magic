@@ -21,12 +21,12 @@ def fixture() -> FreezeFixture:
 
 def test_freeze_spell_increases_cast_delay(fixture: FreezeFixture) -> None:
     aura = fixture.aura
-    original_delay = aura.cast_delay
+    original_delay = aura.cast_delay.base
 
     aura.add_spell(fixture.freeze_spell)
     aura.update(1.0)  # Update to apply spell effects
 
-    assert aura.cast_delay == original_delay * fixture.cast_delay_modifier
+    assert aura.cast_delay.value == original_delay * fixture.cast_delay_modifier
 
 
 def test_freeze_spell_expires_and_restores_cast_delay(fixture: FreezeFixture) -> None:

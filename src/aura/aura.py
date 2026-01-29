@@ -1,4 +1,4 @@
-from aura.values import MinMaxValue, ValueModifiers
+from aura.values import MinMaxValue, ValueModifiers, ValueWithModifiers
 
 
 class Spell:
@@ -68,6 +68,15 @@ class HealEvent(AuraEvent):
         self.amount = max(0, amount)
 
 
+class CastEvent(AuraEvent):
+    """Event representing a spell cast attempt."""
+
+    def __init__(self, spell: Spell) -> None:
+        """Initializes a cast event."""
+        super().__init__()
+        self.spell = spell
+
+
 class Spells:
     """A collection manager for Spell objects."""
 
@@ -106,8 +115,7 @@ class Aura:
         self.magic = MinMaxValue(value=max_magic, min=min_magic, max=max_magic)
         self._spell_list: list[Spell] = []
         self._spells = Spells(self._spell_list)
-        self._cast_delay_base: float = cast_delay
-        self._cast_delay_modifiers: ValueModifiers = ValueModifiers()
+        self._cast_delay = ValueWithModifiers(base_value=cast_delay)
 
     def add_spell(self, spell: Spell) -> None:
         """Adds a spell to the aura and starts it.
@@ -160,7 +168,7 @@ class Aura:
             elapsed_time: The time passed since the last update.
         """
         self.magic.update(elapsed_time)
-        self._cast_delay_modifiers.update(elapsed_time)
+        self._cast_delay.update(elapsed_time)
 
         spells_to_remove = []
         for spell in self.spells:
@@ -176,21 +184,6 @@ class Aura:
         return self._spells
 
     @property
-    def cast_delay_base(self) -> float:
-        """Returns the base cast delay."""
-        return self._cast_delay_base
-
-    @cast_delay_base.setter
-    def cast_delay_base(self, value: float) -> None:
-        """Sets the base cast delay."""
-        self._cast_delay_base = value
-
-    @property
-    def cast_delay(self) -> float:
+    def cast_delay(self) -> ValueWithModifiers:
         """Returns the current cast delay including modifiers."""
-        return self._cast_delay_modifiers.modify(self._cast_delay_base)
-
-    @property
-    def cast_delay_modifiers(self) -> ValueModifiers:
-        """Returns the cast delay modifiers."""
-        return self._cast_delay_modifiers
+        return self._cast_delay

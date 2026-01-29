@@ -76,13 +76,13 @@ class FreezeSpell(Spell):
         )
 
     def start(self, aura: Aura) -> None:
-        aura.cast_delay_modifiers.add(self._modifier)
+        aura.cast_delay.modifiers.add(self._modifier)
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
         return self.duration.update(elapsed_time)
 
     def stop(self, aura: Aura) -> None:
-        aura.cast_delay_modifiers.remove(self._modifier)
+        aura.cast_delay.modifiers.remove(self._modifier)
 
 
 class IceShieldSpell(Spell):
