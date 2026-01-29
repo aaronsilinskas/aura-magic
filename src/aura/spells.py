@@ -4,37 +4,50 @@ from aura.values import ValueModifier
 from .aura import DamageEvent, HealEvent, Spell, Aura, AuraEvent, SpellTags
 
 
-class DurationSpell(Spell):
-    """A spell with a specific duration."""
+class Duration:
+    """A utility class for tracking a duration."""
 
-    def __init__(self, tags: list[str], duration: float) -> None:
-        super().__init__(tags)
-        self._duration = duration
-        self._elapsed = 0.0
+    def __init__(self, length: float) -> None:
+        """Initialize a Duration tracker.
 
-    def update(self, aura: "Aura", elapsed_time: float) -> bool:
+        Args:
+            length: The total length of the duration.
+        """
+        self._length: float = length
+        self._elapsed: float = 0.0
+
+    def update(self, elapsed_time: float) -> bool:
+        """Update the elapsed time and check if the duration has expired.
+
+        Args:
+            elapsed_time: The amount of time passed since the last update.
+
+        Returns:
+            True if the duration has expired, False otherwise.
+        """
         self._elapsed += elapsed_time
+
         return self.is_expired
 
     @property
-    def duration(self) -> float:
-        """The total duration of the spell."""
-        return self._duration
+    def length(self) -> float:
+        """The total length of the duration."""
+        return self._length
 
     @property
-    def duration_elapsed(self) -> float:
-        """The time elapsed since the spell started."""
+    def elapsed(self) -> float:
+        """The time elapsed since the start of the duration."""
         return self._elapsed
 
     @property
-    def duration_remaining(self) -> float:
-        """The time remaining until the spell expires."""
-        return max(0.0, self._duration - self._elapsed)
+    def remaining(self) -> float:
+        """The remaining time until the duration expires."""
+        return max(0.0, self._length - self._elapsed)
 
     @property
     def is_expired(self) -> bool:
-        """Whether the spell has expired."""
-        return self._elapsed >= self._duration
+        """Whether the duration has expired."""
+        return self._elapsed >= self._length
 
 
 class AmbientMagicRegenSpell(Spell):
@@ -49,18 +62,17 @@ class AmbientMagicRegenSpell(Spell):
         return False  # Don't remove this spell
 
 
-class IgniteSpell(DurationSpell):
+class IgniteSpell(Spell):
     def __init__(self, damage_per_second: float, duration: float) -> None:
-        super().__init__([SpellTags.DEBUFF, ElementTags.FIRE], duration)
+        super().__init__([SpellTags.DEBUFF, ElementTags.FIRE])
+        self.duration = Duration(duration)
         self.damage_per_second = damage_per_second
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
-        damage = self.damage_per_second * min(
-            elapsed_time, self.duration - self.duration_elapsed
-        )
+        damage = self.damage_per_second * min(elapsed_time, self.duration.remaining)
         aura.handle_event(DamageEvent(damage))
 
-        return super().update(aura, elapsed_time)
+        return self.duration.update(elapsed_time)
 
 
 class AirSliceSpell(Spell):
@@ -74,26 +86,24 @@ class AirSliceSpell(Spell):
         return True  # Remove after one application
 
 
-class EarthShieldSpell(DurationSpell):
+class EarthShieldSpell(Spell):
     """Resists incoming damage for a number of hits or duration."""
 
     def __init__(self, reduction: float, max_hits: int, duration: float) -> None:
-        super().__init__(
-            [SpellTags.BUFF, SpellTags.SHIELD, ElementTags.EARTH], duration
-        )
-
+        super().__init__([SpellTags.BUFF, SpellTags.SHIELD, ElementTags.EARTH])
+        self.duration = Duration(duration)
         self.reduction = max(0, min(reduction, 1))
         self.max_hits = max_hits
         self.hits_taken = 0
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
-        if super().update(aura, elapsed_time):
+        if self.duration.update(elapsed_time):
             return True
 
         return self.hits_taken >= self.max_hits
 
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
-        if self.is_expired or self.hits_taken >= self.max_hits:
+        if self.duration.is_expired or self.hits_taken >= self.max_hits:
             return
 
         if isinstance(event, DamageEvent):
@@ -101,23 +111,28 @@ class EarthShieldSpell(DurationSpell):
             self.hits_taken += 1
 
 
-class FreezeSpell(DurationSpell):
+class FreezeSpell(Spell):
     """Increases the delay between spell casts for a duration."""
 
     def __init__(self, duration: float, cast_delay_modifier: float) -> None:
-        super().__init__([SpellTags.DEBUFF, ElementTags.ICE], duration)
-
+        super().__init__([SpellTags.DEBUFF, ElementTags.ICE])
+        self.duration = Duration(duration)
         self.cast_delay_modifier = cast_delay_modifier
-        self._modifier = ValueModifier(self.cast_delay_modifier, duration=self.duration)
+        self._modifier = ValueModifier(
+            self.cast_delay_modifier, duration=self.duration.length
+        )
 
     def start(self, aura: Aura) -> None:
         aura.cast_delay_modifiers.add(self._modifier)
+
+    def update(self, aura: Aura, elapsed_time: float) -> bool:
+        return self.duration.update(elapsed_time)
 
     def stop(self, aura: Aura) -> None:
         aura.cast_delay_modifiers.remove(self._modifier)
 
 
-class IceShieldSpell(DurationSpell):
+class IceShieldSpell(Spell):
     """Resists incoming damage for a number of hits or duration. Casts Freeze when max hits exceeded."""
 
     def __init__(
@@ -128,8 +143,9 @@ class IceShieldSpell(DurationSpell):
         freeze_spell: FreezeSpell,
         caster: Caster,
     ) -> None:
-        super().__init__([SpellTags.BUFF, SpellTags.SHIELD, ElementTags.ICE], duration)
+        super().__init__([SpellTags.BUFF, SpellTags.SHIELD, ElementTags.ICE])
 
+        self.duration = Duration(duration)
         self.reduction = max(0, min(reduction, 1))
         self.max_hits = max_hits
         self._freeze_spell = freeze_spell
@@ -139,7 +155,7 @@ class IceShieldSpell(DurationSpell):
         self._freeze_cast = False
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
-        if super().update(aura, elapsed_time):
+        if self.duration.update(elapsed_time):
             return True
 
         # Cast Freeze spell when max hits exceeded
@@ -150,7 +166,7 @@ class IceShieldSpell(DurationSpell):
         return False
 
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
-        if self.is_expired or self.hits_taken >= self.max_hits:
+        if self.duration.is_expired or self.hits_taken >= self.max_hits:
             return
 
         if isinstance(event, DamageEvent):
@@ -167,11 +183,12 @@ class IceShieldSpell(DurationSpell):
         )  # Cast type can be arbitrary here
 
 
-class VulnerableSpell(DurationSpell):
+class VulnerableSpell(Spell):
     """Removes shields or if no shields were active, increases damage taken for a duration."""
 
     def __init__(self, damage_multiplier: float, duration: float) -> None:
-        super().__init__([SpellTags.DEBUFF, ElementTags.DARK], duration)
+        super().__init__([SpellTags.DEBUFF, ElementTags.DARK])
+        self.duration = Duration(duration)
         self.damage_multiplier: float = max(1.0, damage_multiplier)
         self.shield_spells_removed: bool = False
 
@@ -182,15 +199,22 @@ class VulnerableSpell(DurationSpell):
 
         self.shield_spells_removed = len(shield_spells) > 0
 
+    def update(self, aura: Aura, elapsed_time: float) -> bool:
+        return self.duration.update(elapsed_time)
+
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
         if not self.shield_spells_removed and isinstance(event, DamageEvent):
             event.amount *= self.damage_multiplier
 
 
-class ChargeSpell(DurationSpell):
+class ChargeSpell(Spell):
     def __init__(self, healing_multiplier: float, duration: float) -> None:
-        super().__init__([SpellTags.BUFF, ElementTags.LIGHTNING], duration)
+        super().__init__([SpellTags.BUFF, ElementTags.LIGHTNING])
+        self.duration = Duration(duration)
         self.healing_multiplier = healing_multiplier
+
+    def update(self, aura: Aura, elapsed_time: float) -> bool:
+        return self.duration.update(elapsed_time)
 
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
         if isinstance(event, HealEvent):

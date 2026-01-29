@@ -1,8 +1,8 @@
 import random
 
 import pytest
-from aura.aura import DamageEvent, HealEvent, SpellTags
-from aura.spells import DurationSpell, VulnerableSpell
+from aura.aura import DamageEvent, HealEvent, Spell, SpellTags
+from aura.spells import VulnerableSpell
 from conftest import AuraFixture
 
 
@@ -26,9 +26,9 @@ def test_vulnerable_removes_shield_spells(fixture: VulnerableFixture) -> None:
     aura = fixture.aura
 
     # Add non-shield and shield spells
-    non_shield_spell = DurationSpell(tags=[SpellTags.BUFF], duration=10.0)
-    shield_spell = DurationSpell(tags=[SpellTags.SHIELD], duration=10.0)
-    shield_spell_2 = DurationSpell(tags=[SpellTags.SHIELD], duration=10.0)
+    non_shield_spell = Spell(tags=[SpellTags.BUFF])
+    shield_spell = Spell(tags=[SpellTags.SHIELD])
+    shield_spell_2 = Spell(tags=[SpellTags.SHIELD])
     aura.add_spell(non_shield_spell)
     aura.add_spell(shield_spell)
     aura.add_spell(shield_spell_2)
@@ -66,7 +66,7 @@ def test_vulnerable_does_not_amplify_damage_when_shields_removed(
     initial_magic = aura.magic.value
 
     # Shield spell active to be removed
-    shield_spell = DurationSpell(tags=[SpellTags.SHIELD], duration=10.0)
+    shield_spell = Spell(tags=[SpellTags.SHIELD])
     aura.add_spell(shield_spell)
 
     aura.add_spell(fixture.vulnerable_spell)
