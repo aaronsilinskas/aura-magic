@@ -1,6 +1,52 @@
 from typing import Callable
 
 
+class Duration:
+    """A utility class for tracking a duration."""
+
+    def __init__(self, length: float) -> None:
+        """Initialize a Duration tracker.
+
+        Args:
+            length: The total length of the duration.
+        """
+        self._length: float = length
+        self._elapsed: float = 0.0
+
+    def update(self, elapsed_time: float) -> bool:
+        """Update the elapsed time and check if the duration has expired.
+
+        Args:
+            elapsed_time: The amount of time passed since the last update.
+
+        Returns:
+            True if the duration has expired, False otherwise.
+        """
+        self._elapsed += elapsed_time
+
+        return self.is_expired
+
+    @property
+    def length(self) -> float:
+        """The total length of the duration."""
+        return self._length
+
+    @property
+    def elapsed(self) -> float:
+        """The time elapsed since the start of the duration."""
+        return self._elapsed
+
+    @property
+    def remaining(self) -> float:
+        """The remaining time until the duration expires."""
+        return max(0.0, self._length - self._elapsed)
+
+    @property
+    def is_expired(self) -> bool:
+        """Whether the duration has expired."""
+        return self._elapsed >= self._length
+
+
 class ValueModifier:
     """Applies a temporary multiplier to a value."""
 
@@ -12,8 +58,7 @@ class ValueModifier:
             duration: The time in seconds the modifier lasts.
         """
         self._multiplier = multiplier
-        self._duration = duration
-        self._duration_elapsed = 0.0
+        self._duration = Duration(duration)
 
     def update(self, elapsed_time: float) -> bool:
         """Updates the elapsed time.
@@ -24,8 +69,7 @@ class ValueModifier:
         Returns:
             True if the modifier has expired, False otherwise.
         """
-        self._duration_elapsed += elapsed_time
-        return self._duration_elapsed >= self._duration
+        return self._duration.update(elapsed_time)
 
     @property
     def multiplier(self) -> float:
@@ -33,14 +77,9 @@ class ValueModifier:
         return self._multiplier
 
     @property
-    def duration(self) -> float:
+    def duration(self) -> Duration:
         """Returns the total duration."""
         return self._duration
-
-    @property
-    def duration_elapsed(self) -> float:
-        """Returns the time elapsed since the modifier started."""
-        return self._duration_elapsed
 
 
 class ValueModifiers:

@@ -1,53 +1,7 @@
 from aura.caster import CastType, Caster
 from aura.spell.elements import ElementTags
-from aura.values import ValueModifier
+from aura.values import Duration, ValueModifier
 from .aura import DamageEvent, HealEvent, Spell, Aura, AuraEvent, SpellTags
-
-
-class Duration:
-    """A utility class for tracking a duration."""
-
-    def __init__(self, length: float) -> None:
-        """Initialize a Duration tracker.
-
-        Args:
-            length: The total length of the duration.
-        """
-        self._length: float = length
-        self._elapsed: float = 0.0
-
-    def update(self, elapsed_time: float) -> bool:
-        """Update the elapsed time and check if the duration has expired.
-
-        Args:
-            elapsed_time: The amount of time passed since the last update.
-
-        Returns:
-            True if the duration has expired, False otherwise.
-        """
-        self._elapsed += elapsed_time
-
-        return self.is_expired
-
-    @property
-    def length(self) -> float:
-        """The total length of the duration."""
-        return self._length
-
-    @property
-    def elapsed(self) -> float:
-        """The time elapsed since the start of the duration."""
-        return self._elapsed
-
-    @property
-    def remaining(self) -> float:
-        """The remaining time until the duration expires."""
-        return max(0.0, self._length - self._elapsed)
-
-    @property
-    def is_expired(self) -> bool:
-        """Whether the duration has expired."""
-        return self._elapsed >= self._length
 
 
 class AmbientMagicRegenSpell(Spell):
