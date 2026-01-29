@@ -241,3 +241,37 @@ class MinMaxValue:
     def max_modifiers(self) -> ValueModifiers:
         """Returns the manager for maximum modifiers."""
         return self._max_modifier
+
+
+class Counter:
+    """A counter for tracking attributes like spell hits."""
+
+    def __init__(self, max: int) -> None:
+        """Initializes the counter."""
+        self._max: int = max
+        self._count: int = 0
+
+    def increment(self) -> bool:
+        """Increments the count by one. Returns True if max reached."""
+        self._count = min(self._count + 1, self._max)
+
+        return self._count >= self._max
+
+    def reset(self) -> None:
+        """Resets the count to zero."""
+        self._count = 0
+
+    @property
+    def count(self) -> int:
+        """Returns the current count."""
+        return self._count
+
+    @property
+    def max(self) -> int:
+        """Returns the maximum count allowed."""
+        return self._max
+
+    @property
+    def is_max(self) -> bool:
+        """Returns True if the current count has reached the maximum."""
+        return self._count >= self._max

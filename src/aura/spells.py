@@ -1,6 +1,6 @@
 from aura.caster import CastType, Caster
 from aura.spell.elements import ElementTags
-from aura.values import Duration, ValueModifier
+from aura.values import Counter, Duration, ValueModifier
 from .aura import DamageEvent, HealEvent, Spell, Aura, AuraEvent, SpellTags
 
 
@@ -47,22 +47,21 @@ class EarthShieldSpell(Spell):
         super().__init__([SpellTags.BUFF, SpellTags.SHIELD, ElementTags.EARTH])
         self.duration = Duration(duration)
         self.reduction = max(0, min(reduction, 1))
-        self.max_hits = max_hits
-        self.hits_taken = 0
+        self.hits = Counter(max=max_hits)
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
         if self.duration.update(elapsed_time):
             return True
 
-        return self.hits_taken >= self.max_hits
+        return self.hits.is_max
 
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
-        if self.duration.is_expired or self.hits_taken >= self.max_hits:
+        if self.duration.is_expired or self.hits.is_max:
             return
 
         if isinstance(event, DamageEvent):
             event.amount *= 1 - self.reduction
-            self.hits_taken += 1
+            self.hits.increment()
 
 
 class FreezeSpell(Spell):
@@ -101,11 +100,10 @@ class IceShieldSpell(Spell):
 
         self.duration = Duration(duration)
         self.reduction = max(0, min(reduction, 1))
-        self.max_hits = max_hits
+        self.hits = Counter(max=max_hits)
         self._freeze_spell = freeze_spell
         self._caster = caster
 
-        self.hits_taken = 0
         self._freeze_cast = False
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -113,19 +111,19 @@ class IceShieldSpell(Spell):
             return True
 
         # Cast Freeze spell when max hits exceeded
-        if self.hits_taken >= self.max_hits:
+        if self.hits.is_max:
             self._cast_freeze()
             return True
 
         return False
 
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
-        if self.duration.is_expired or self.hits_taken >= self.max_hits:
+        if self.duration.is_expired or self.hits.is_max:
             return
 
         if isinstance(event, DamageEvent):
             event.amount *= 1 - self.reduction
-            self.hits_taken += 1
+            self.hits.increment()
 
     def _cast_freeze(self) -> None:
         if self._freeze_cast:
