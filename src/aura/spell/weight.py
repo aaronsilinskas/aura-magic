@@ -1,5 +1,6 @@
 import math
 from aura.aura import Aura, AuraEvent, DamageEvent, SpellTags
+from aura.spell.elements import ElementTags
 from aura.spells import DurationSpell
 
 
@@ -35,7 +36,7 @@ class WeightSpell(DurationSpell):
     def __init__(
         self, acceleration_threshold: float, damage_per_second: float, duration: float
     ) -> None:
-        super().__init__([SpellTags.DEBUFF], duration)
+        super().__init__([SpellTags.DEBUFF, ElementTags.GRAVITY], duration)
         self.acceleration_threshold = acceleration_threshold
         self.damage_per_second = damage_per_second
         self.movement_detected = False

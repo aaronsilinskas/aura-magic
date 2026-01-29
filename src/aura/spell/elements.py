@@ -1,0 +1,11 @@
+class ElementTags:
+    FIRE = "fire"
+    WATER = "water"
+    EARTH = "earth"
+    ICE = "ice"
+    AIR = "air"
+    LIGHTNING = "lightning"
+    LIGHT = "light"
+    DARK = "dark"
+    TIME = "time"
+    GRAVITY = "gravity"

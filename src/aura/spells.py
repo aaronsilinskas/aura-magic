@@ -1,4 +1,5 @@
 from aura.caster import CastType, Caster
+from aura.spell.elements import ElementTags
 from aura.values import ValueModifier
 from .aura import DamageEvent, HealEvent, Spell, Aura, AuraEvent, SpellTags
 
@@ -50,7 +51,7 @@ class AmbientMagicRegenSpell(Spell):
 
 class IgniteSpell(DurationSpell):
     def __init__(self, damage_per_second: float, duration: float) -> None:
-        super().__init__([SpellTags.DEBUFF], duration)
+        super().__init__([SpellTags.DEBUFF, ElementTags.FIRE], duration)
         self.damage_per_second = damage_per_second
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -64,7 +65,7 @@ class IgniteSpell(DurationSpell):
 
 class AirSliceSpell(Spell):
     def __init__(self, damage: float) -> None:
-        super().__init__([SpellTags.DEBUFF])
+        super().__init__([SpellTags.DEBUFF, ElementTags.AIR])
         self.damage = damage
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -77,7 +78,9 @@ class EarthShieldSpell(DurationSpell):
     """Resists incoming damage for a number of hits or duration."""
 
     def __init__(self, reduction: float, max_hits: int, duration: float) -> None:
-        super().__init__([SpellTags.BUFF, SpellTags.SHIELD], duration)
+        super().__init__(
+            [SpellTags.BUFF, SpellTags.SHIELD, ElementTags.EARTH], duration
+        )
 
         self.reduction = max(0, min(reduction, 1))
         self.max_hits = max_hits
@@ -102,7 +105,7 @@ class FreezeSpell(DurationSpell):
     """Increases the delay between spell casts for a duration."""
 
     def __init__(self, duration: float, cast_delay_modifier: float) -> None:
-        super().__init__([SpellTags.DEBUFF], duration)
+        super().__init__([SpellTags.DEBUFF, ElementTags.ICE], duration)
 
         self.cast_delay_modifier = cast_delay_modifier
         self._modifier = ValueModifier(self.cast_delay_modifier, duration=self.duration)
@@ -125,7 +128,7 @@ class IceShieldSpell(DurationSpell):
         freeze_spell: FreezeSpell,
         caster: Caster,
     ) -> None:
-        super().__init__([SpellTags.BUFF, SpellTags.SHIELD], duration)
+        super().__init__([SpellTags.BUFF, SpellTags.SHIELD, ElementTags.ICE], duration)
 
         self.reduction = max(0, min(reduction, 1))
         self.max_hits = max_hits
@@ -168,7 +171,7 @@ class VulnerableSpell(DurationSpell):
     """Removes shields or if no shields were active, increases damage taken for a duration."""
 
     def __init__(self, damage_multiplier: float, duration: float) -> None:
-        super().__init__([SpellTags.DEBUFF], duration)
+        super().__init__([SpellTags.DEBUFF, ElementTags.DARK], duration)
         self.damage_multiplier: float = max(1.0, damage_multiplier)
         self.shield_spells_removed: bool = False
 
@@ -186,7 +189,7 @@ class VulnerableSpell(DurationSpell):
 
 class ChargeSpell(DurationSpell):
     def __init__(self, healing_multiplier: float, duration: float) -> None:
-        super().__init__([SpellTags.BUFF], duration)
+        super().__init__([SpellTags.BUFF, ElementTags.LIGHTNING], duration)
         self.healing_multiplier = healing_multiplier
 
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
