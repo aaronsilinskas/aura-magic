@@ -2,7 +2,7 @@ import random
 import pytest
 from aura.caster import CastType
 from aura.spells import IceShieldSpell, AirSliceSpell, FreezeSpell
-from conftest import AuraFixture, SpellTrackingCaster
+from conftest import AuraFixture, MockCaster
 
 
 class IceShieldFixture(AuraFixture):
@@ -11,7 +11,7 @@ class IceShieldFixture(AuraFixture):
         self.damage_reduction = 0.50  # 50% damage reduction
         self.max_hits = random.randint(3, 5)
         self.duration = round(random.uniform(5.0, 10.0))
-        self.caster = SpellTrackingCaster()
+        self.caster = MockCaster()
         self.freeze_spell = FreezeSpell(duration=5.0, cast_delay_modifier=2.0)
 
         self.shield_spell = IceShieldSpell(

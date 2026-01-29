@@ -77,6 +77,32 @@ class CastEvent(AuraEvent):
         self.spell = spell
 
 
+class AddSpellEvent(AuraEvent):
+    """Event representing a spell being added to the aura."""
+
+    def __init__(self, spell: Spell) -> None:
+        """Initializes an adding spell event."""
+        super().__init__()
+        self.spell = spell
+
+
+class RemoveSpellEvent(AuraEvent):
+    """Event representing a spell being removed from the aura."""
+
+    def __init__(self, spell: Spell) -> None:
+        """Initializes a removing spell event."""
+        super().__init__()
+        self.spell = spell
+
+
+class EventListener:
+    """Interface for objects that listen to aura events."""
+
+    def on_spell_event(self, aura: "Aura", event: AuraEvent) -> None:
+        """Called when an event occurs in the aura."""
+        pass
+
+
 class Spells:
     """A collection manager for Spell objects."""
 
@@ -116,6 +142,7 @@ class Aura:
         self._spell_list: list[Spell] = []
         self._spells = Spells(self._spell_list)
         self._cast_delay = ValueWithModifiers(base_value=cast_delay)
+        self._event_listeners: list[EventListener] = []
 
     def add_spell(self, spell: Spell) -> None:
         """Adds a spell to the aura and starts it.
@@ -123,8 +150,7 @@ class Aura:
         Args:
             spell: The spell to add.
         """
-        self._spell_list.append(spell)
-        spell.start(self)
+        self.handle_event(AddSpellEvent(spell))
 
     def remove_spell(self, spell: Spell) -> None:
         """Removes a spell from the aura and stops it.
@@ -132,8 +158,15 @@ class Aura:
         Args:
             spell: The spell to remove.
         """
-        self._spell_list.remove(spell)
-        spell.stop(self)
+        self.handle_event(RemoveSpellEvent(spell))
+
+    def cast_spell(self, spell: Spell) -> None:
+        """Attempts to cast a spell, allow the spell and other active spells to react to it.
+
+        Args:
+            spell: The spell to cast.
+        """
+        self.handle_event(CastEvent(spell))
 
     def handle_event(self, event: AuraEvent) -> None:
         """Processes an incoming event through all active spells.
@@ -149,6 +182,8 @@ class Aura:
                 return
 
         self._apply_event(event)
+        for listener in self._event_listeners:
+            listener.on_spell_event(self, event)
 
     def _apply_event(self, event: AuraEvent) -> None:
         """Applies the event to the magic value.
@@ -160,6 +195,12 @@ class Aura:
             self.magic.value -= event.amount
         elif isinstance(event, HealEvent):
             self.magic.value += event.amount
+        elif isinstance(event, AddSpellEvent):
+            self._spell_list.append(event.spell)
+            event.spell.start(self)
+        elif isinstance(event, RemoveSpellEvent):
+            self._spell_list.remove(event.spell)
+            event.spell.stop(self)
 
     def update(self, elapsed_time: float) -> None:
         """Updates the aura state, magic, and spells.
@@ -187,3 +228,10 @@ class Aura:
     def cast_delay(self) -> ValueWithModifiers:
         """Returns the current cast delay including modifiers."""
         return self._cast_delay
+
+    @property
+    def event_listeners(self) -> list[EventListener]:
+        """Returns the list of event listeners.
+        These listeners will be notified on events after the event is processed by active spells and the Aura.
+        """
+        return self._event_listeners

@@ -1,7 +1,7 @@
 import random
 
 from aura import Aura
-from aura.aura import DamageEvent, Spell
+from aura.aura import AuraEvent, DamageEvent, EventListener, Spell
 from aura.caster import Caster
 
 
@@ -26,7 +26,7 @@ class CapturedSpell:
         self.cast_type = cast_type
 
 
-class SpellTrackingCaster(Caster):
+class MockCaster(Caster):
     def __init__(self) -> None:
         self.cast_spells: list[CapturedSpell] = []
 
@@ -38,3 +38,20 @@ class SpellTrackingCaster(Caster):
             captured.spell == spell and captured.cast_type == cast_type
             for captured in self.cast_spells
         )
+
+
+class MockEventListener(EventListener):
+    def __init__(self):
+        self.events = []
+
+    def on_spell_event(self, aura: Aura, event: AuraEvent) -> None:
+        self.events.append((aura, event))
+
+    def was_event_received(self, aura: Aura, event: AuraEvent) -> bool:
+        return any(e is event and a is aura for a, e in self.events)
+
+    @property
+    def last_event(self) -> AuraEvent | None:
+        if self.events:
+            return self.events[-1][1]
+        return None
