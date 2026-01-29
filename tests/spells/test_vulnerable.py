@@ -78,7 +78,7 @@ def test_vulnerable_does_not_amplify_damage_when_shields_removed(
 
 def test_vulnerable_not_applied_to_healing(fixture: VulnerableFixture) -> None:
     aura = fixture.aura
-    heal_amount = aura.magic.max / 4  # heal by 25%
+    heal_amount = aura.magic.max.value / 4  # heal by 25%
     fixture.set_starting_magic(fixture.max_magic - heal_amount * 2)
     initial_magic = aura.magic.value
 

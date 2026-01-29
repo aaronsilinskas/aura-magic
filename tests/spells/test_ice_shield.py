@@ -22,7 +22,7 @@ class IceShieldFixture(AuraFixture):
             caster=self.caster,
         )
 
-        self.damage = self.aura.magic.max / 4  # Damage 1/4 of magic
+        self.damage = self.aura.magic.max.value / 4  # Damage 1/4 of magic
         self.damage_spell = AirSliceSpell(damage=self.damage)
         self.damage_after_shield = self.damage * (1 - self.damage_reduction)
 
@@ -41,7 +41,7 @@ def test_ice_shield_resistance(shield_fixture: IceShieldFixture) -> None:
     aura.update(0.1)  # Trigger damage
 
     assert aura.magic.value == pytest.approx(
-        aura.magic.max - (shield_fixture.damage_after_shield * 2)
+        aura.magic.max.value - (shield_fixture.damage_after_shield * 2)
     )
 
 

@@ -12,7 +12,7 @@ def fixture() -> AuraFixture:
 def test_aura_initialization(fixture: AuraFixture) -> None:
     aura = fixture.aura
     assert aura.magic.value == fixture.max_magic
-    assert aura.magic.max == fixture.max_magic
+    assert aura.magic.max.value == fixture.max_magic
     assert len(aura.spells) == 0
 
 
@@ -31,22 +31,22 @@ def test_magic_max_limit(fixture: AuraFixture) -> None:
     aura = fixture.aura
 
     # Try to exceed max magic limit
-    heal_past_max = aura.magic.max * 10
+    heal_past_max = aura.magic.max.value * 10
     aura.handle_event(HealEvent(heal_past_max))
 
     # Current should not exceed max magic
-    assert aura.magic.value == aura.magic.max
+    assert aura.magic.value == aura.magic.max.value
 
 
 def test_update_triggers_magic_value_update(fixture: AuraFixture) -> None:
     aura = fixture.aura
     modifier = ValueModifier(1.0, duration=0.1)
-    aura.magic.max_modifiers.add(modifier)
+    aura.magic.max.modifiers.add(modifier)
 
     # Update the aura to trigger modifier expiry
     aura.update(1.0)
 
-    assert len(aura.magic.max_modifiers) == 0
+    assert len(aura.magic.max.modifiers) == 0
 
 
 def test_update_triggers_cast_delay_update(fixture: AuraFixture) -> None:

@@ -83,7 +83,7 @@ class ValueModifier:
 
 
 class ValueModifiers:
-    """Manages a collection of ValueModifiers and notifies a callback when the list changes."""
+    """Manages a collection of ValueModifiers and notifies an optional callback when the list changes."""
 
     def __init__(self, modifiers_changed: Callable | None = None) -> None:
         """Initializes the manager with a callback for list changes.
@@ -159,6 +159,58 @@ class ValueModifiers:
         return iter(self._modifiers)
 
 
+class ValueWithModifiers:
+    """A value that can be modified by a set of multipliers."""
+
+    def __init__(
+        self, base_value: float = 0.0, value_changed: Callable | None = None
+    ) -> None:
+        """Initializes the value with modifiers.
+
+        Args:
+            value_changed: A callable to invoke when the value changes.
+        """
+        self._base: float = base_value
+        self._value: float = base_value
+        self._value_changed = value_changed
+        self._modifiers: ValueModifiers = ValueModifiers(self._update_value)
+
+    def _update_value(self) -> None:
+        """Invokes the value changed callback if set."""
+        self._value = self._modifiers.modify(self._base)
+        if self._value_changed:
+            self._value_changed()
+
+    def update(self, elapsed_time: float) -> None:
+        """Updates the modifiers.
+
+        Args:
+            elapsed_time: The time passed since the last update.
+        """
+        self._modifiers.update(elapsed_time)
+
+    @property
+    def base(self) -> float:
+        """Returns the base value."""
+        return self._base
+
+    @base.setter
+    def base(self, value: float) -> None:
+        """Sets the base value."""
+        self._base = value
+        self._update_value()
+
+    @property
+    def modifiers(self) -> ValueModifiers:
+        """Returns the modifiers manager."""
+        return self._modifiers
+
+    @property
+    def value(self) -> float:
+        """Returns the modified value."""
+        return self._value
+
+
 class MinMaxValue:
     """A value clamped between a minimum and a dynamic maximum."""
 
@@ -172,12 +224,11 @@ class MinMaxValue:
         """
         self._value = value
         self._min = min
-        self._max_base = max
-        self._max_modifier = ValueModifiers(self._clamp_value)
+        self._max = ValueWithModifiers(base_value=max, value_changed=self._clamp_value)
 
     def _clamp_value(self) -> None:
         """Clamps the current value between min and max."""
-        self._value = max(self.min, min(self._value, self.max))
+        self._value = max(self.min, min(self._value, self.max.value))
 
     def update(self, elapsed_time: float) -> None:
         """Updates the maximum modifiers.
@@ -185,7 +236,7 @@ class MinMaxValue:
         Args:
             elapsed_time: The time passed since the last update.
         """
-        self._max_modifier.update(elapsed_time)
+        self._max.update(elapsed_time)
 
     @property
     def value(self) -> float:
@@ -218,29 +269,9 @@ class MinMaxValue:
         self._clamp_value()
 
     @property
-    def max_base(self) -> float:
-        """Returns the base maximum value."""
-        return self._max_base
-
-    @max_base.setter
-    def max_base(self, value: float) -> None:
-        """Updates the base maximum value and clamps the current value to the modified max.
-
-        Args:
-            value: The new base maximum value.
-        """
-        self._max_base = value
-        self._clamp_value()
-
-    @property
-    def max(self) -> float:
+    def max(self) -> ValueWithModifiers:
         """Returns the current maximum, considering active modifiers."""
-        return self._max_modifier.modify(self._max_base)
-
-    @property
-    def max_modifiers(self) -> ValueModifiers:
-        """Returns the manager for maximum modifiers."""
-        return self._max_modifier
+        return self._max
 
 
 class Counter:
