@@ -144,7 +144,7 @@ class IceShieldSpell(DurationSpell):
 
         # Cast Freeze spell when max hits exceeded
         if self.hits_taken >= self.max_hits:
-            self._cast_freeze(aura)
+            self._cast_freeze()
             return True
 
         return False
@@ -157,7 +157,7 @@ class IceShieldSpell(DurationSpell):
             event.amount *= 1 - self.reduction
             self.hits_taken += 1
 
-    def _cast_freeze(self, aura: Aura) -> None:
+    def _cast_freeze(self) -> None:
         if self._freeze_cast:
             return  # Already cast
         self._freeze_cast = True
