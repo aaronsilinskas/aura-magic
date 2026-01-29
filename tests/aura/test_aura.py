@@ -146,3 +146,29 @@ def test_get_spells_by_tag(fixture: AuraFixture) -> None:
 
     assert buff_spell in buff_spells
     assert debuff_spell in debuff_spells
+
+
+def test_get_spells_by_class(fixture: AuraFixture) -> None:
+    aura = fixture.aura
+
+    class CustomSpellA(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[])
+
+    class CustomSpellB(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[])
+
+    spell_a1 = CustomSpellA()
+    spell_a2 = CustomSpellA()
+    spell_b = CustomSpellB()
+
+    aura.add_spell(spell_a1)
+    aura.add_spell(spell_a2)
+    aura.add_spell(spell_b)
+
+    spells_a = list(aura.spells.get_by_class(CustomSpellA))
+    spells_b = list(aura.spells.get_by_class(CustomSpellB))
+
+    assert spells_a == [spell_a1, spell_a2]
+    assert spells_b == [spell_b]

@@ -117,6 +117,10 @@ class Spells:
         """Finds spells by a specific tag."""
         return [spell for spell in self._spells if tag in spell.tags]
 
+    def get_by_class(self, cls: type) -> list[Spell]:
+        """Finds spells by their class type."""
+        return [spell for spell in self._spells if isinstance(spell, cls)]
+
     def __len__(self) -> int:
         return len(self._spells)
 
