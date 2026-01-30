@@ -4,7 +4,8 @@ from aura.values import Duration
 
 
 class VulnerableSpell(Spell):
-    """Removes shields or if no shields were active, increases damage taken for a duration."""
+    """Removes any existing or new shields while this spell is active.
+    If no shields are removed, increases damage taken for a duration."""
 
     def __init__(self, damage_multiplier: float, duration: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.DARK])
@@ -12,14 +13,14 @@ class VulnerableSpell(Spell):
         self.damage_multiplier: float = max(1.0, damage_multiplier)
         self.shield_spells_removed: bool = False
 
-    def start(self, aura: Aura) -> None:
+    def update(self, aura: Aura, elapsed_time: float) -> bool:
         shield_spells = aura.spells.get_by_tag(SpellTags.SHIELD)
         for spell in shield_spells:
             aura.remove_spell(spell)
 
-        self.shield_spells_removed = len(shield_spells) > 0
+        if len(shield_spells) > 0:
+            self.shield_spells_removed = True
 
-    def update(self, aura: Aura, elapsed_time: float) -> bool:
         return self.duration.update(elapsed_time)
 
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:

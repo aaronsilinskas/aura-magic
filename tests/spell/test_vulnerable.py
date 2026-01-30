@@ -2,6 +2,7 @@ import random
 
 import pytest
 from aura.aura import DamageEvent, HealEvent, Spell, SpellTags
+from aura.spell.elemental.earth_shield import EarthShieldSpell
 from aura.spell.elemental.vulnerable import VulnerableSpell
 from conftest import AuraFixture
 
@@ -22,14 +23,12 @@ def fixture() -> VulnerableFixture:
     return VulnerableFixture()
 
 
-def test_vulnerable_removes_shield_spells(fixture: VulnerableFixture) -> None:
+def test_vulnerable_removes_existing_shields(fixture: VulnerableFixture) -> None:
     aura = fixture.aura
 
-    # Add non-shield and shield spells
-    non_shield_spell = Spell(tags=[SpellTags.BUFF])
-    shield_spell = Spell(tags=[SpellTags.SHIELD])
-    shield_spell_2 = Spell(tags=[SpellTags.SHIELD])
-    aura.add_spell(non_shield_spell)
+    # Add shield spells
+    shield_spell = EarthShieldSpell(2.0, 3, duration=10)
+    shield_spell_2 = EarthShieldSpell(1.5, 2, duration=10)
     aura.add_spell(shield_spell)
     aura.add_spell(shield_spell_2)
 
@@ -37,10 +36,30 @@ def test_vulnerable_removes_shield_spells(fixture: VulnerableFixture) -> None:
 
     # Add the vulnerable spell
     aura.add_spell(fixture.vulnerable_spell)
+    aura.update(0.1)  # Update to trigger shield removal
 
-    # Shield spell should be removed
+    # Shield spells should be removed
     assert aura.spells.get_by_tag(SpellTags.SHIELD) == []
-    assert list(aura.spells) == [non_shield_spell, fixture.vulnerable_spell]
+    assert list(aura.spells) == [fixture.vulnerable_spell]
+
+
+def test_vulnerable_removes_shields_while_active(fixture: VulnerableFixture) -> None:
+    aura = fixture.aura
+
+    # Add the vulnerable spell
+    aura.add_spell(fixture.vulnerable_spell)
+    aura.update(0.1)  # Update to ensure spell is active
+
+    # Add shield spells while vulnerable is active
+    shield_spell = EarthShieldSpell(2.0, 3, duration=10)
+    shield_spell_2 = EarthShieldSpell(1.5, 2, duration=10)
+    aura.add_spell(shield_spell)
+    aura.add_spell(shield_spell_2)
+    aura.update(0.1)  # Update to trigger shield removal
+
+    # Shield spells should be removed
+    assert aura.spells.get_by_tag(SpellTags.SHIELD) == []
+    assert list(aura.spells) == [fixture.vulnerable_spell]
 
 
 def test_vulnerable_amplifies_damage_when_no_shields_removed(
@@ -53,6 +72,7 @@ def test_vulnerable_amplifies_damage_when_no_shields_removed(
 
     # No shield spells active
     aura.add_spell(fixture.vulnerable_spell)
+    aura.update(0.1)  # Update to ensure spell is active
 
     aura.handle_event(DamageEvent(fixture.damage_amount))
 
@@ -66,10 +86,11 @@ def test_vulnerable_does_not_amplify_damage_when_shields_removed(
     initial_magic = aura.magic.value
 
     # Shield spell active to be removed
-    shield_spell = Spell(tags=[SpellTags.SHIELD])
+    shield_spell = EarthShieldSpell(2.0, 3, duration=10)
     aura.add_spell(shield_spell)
 
     aura.add_spell(fixture.vulnerable_spell)
+    aura.update(0.1)  # Update to ensure spell is active
 
     aura.handle_event(DamageEvent(fixture.damage_amount))
 
@@ -84,6 +105,7 @@ def test_vulnerable_not_applied_to_healing(fixture: VulnerableFixture) -> None:
 
     # No shield spells active
     aura.add_spell(fixture.vulnerable_spell)
+    aura.update(0.1)  # Update to ensure spell is active
 
     aura.handle_event(HealEvent(heal_amount))  # Healing event
 
