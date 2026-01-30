@@ -1,7 +1,7 @@
 import random
 
 import pytest
-from aura.aura import DamageEvent, HealEvent, Spell, SpellTags
+from aura.aura import DamageEvent, HealEvent, SpellTags
 from aura.spell.elemental.earth_shield import EarthShieldSpell
 from aura.spell.elemental.vulnerable import VulnerableSpell
 from conftest import AuraFixture
@@ -72,9 +72,9 @@ def test_vulnerable_amplifies_damage_when_no_shields_removed(
 
     # No shield spells active
     aura.add_spell(fixture.vulnerable_spell)
-    aura.update(0.1)  # Update to ensure spell is active
+    aura.update(0.1)  # Process spell addition
 
-    aura.handle_event(DamageEvent(fixture.damage_amount))
+    aura.process_event(DamageEvent(fixture.damage_amount))
 
     assert aura.magic.value == initial_magic - vulnerable_damage_amount
 
@@ -86,13 +86,13 @@ def test_vulnerable_does_not_amplify_damage_when_shields_removed(
     initial_magic = aura.magic.value
 
     # Shield spell active to be removed
-    shield_spell = EarthShieldSpell(2.0, 3, duration=10)
+    shield_spell = EarthShieldSpell(reduction=0.5, max_hits=3, duration=10.0)
     aura.add_spell(shield_spell)
 
     aura.add_spell(fixture.vulnerable_spell)
-    aura.update(0.1)  # Update to ensure spell is active
+    aura.update(0.1)  # Process shield removal
 
-    aura.handle_event(DamageEvent(fixture.damage_amount))
+    aura.process_event(DamageEvent(fixture.damage_amount))
 
     assert aura.magic.value == initial_magic - fixture.damage_amount
 
@@ -105,9 +105,8 @@ def test_vulnerable_not_applied_to_healing(fixture: VulnerableFixture) -> None:
 
     # No shield spells active
     aura.add_spell(fixture.vulnerable_spell)
-    aura.update(0.1)  # Update to ensure spell is active
 
-    aura.handle_event(HealEvent(heal_amount))  # Healing event
+    aura.process_event(HealEvent(heal_amount))  # Healing event
 
     assert aura.magic.value == initial_magic + heal_amount
 

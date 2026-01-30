@@ -8,6 +8,6 @@ class AirSliceSpell(Spell):
         self.damage = damage
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
-        aura.handle_event(DamageEvent(self.damage))
+        aura.process_event(DamageEvent(self.damage))
 
         return True  # Remove after one application

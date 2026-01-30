@@ -157,7 +157,7 @@ class Aura:
         Args:
             spell: The spell to add.
         """
-        self.handle_event(AddSpellEvent(spell))
+        self.process_event(AddSpellEvent(spell))
 
     def remove_spell(self, spell: Spell) -> None:
         """Removes a spell from the aura and stops it.
@@ -165,7 +165,7 @@ class Aura:
         Args:
             spell: The spell to remove.
         """
-        self.handle_event(RemoveSpellEvent(spell))
+        self.process_event(RemoveSpellEvent(spell))
 
     def cast_spell(self, spell: Spell) -> None:
         """Attempts to cast a spell, allow the spell and other active spells to react to it.
@@ -173,9 +173,9 @@ class Aura:
         Args:
             spell: The spell to cast.
         """
-        self.handle_event(CastEvent(spell))
+        self.process_event(CastEvent(spell))
 
-    def handle_event(self, event: AuraEvent) -> None:
+    def process_event(self, event: AuraEvent) -> None:
         """Processes an incoming event through all active spells.
 
         If an event is canceled by a spell, it is not applied to the magic value.

@@ -29,7 +29,7 @@ def test_charge_amplifies_healing(fixture: ChargeFixture) -> None:
 
     aura.add_spell(fixture.charge_spell)
 
-    aura.handle_event(HealEvent(original_heal_amount))
+    aura.process_event(HealEvent(original_heal_amount))
 
     assert aura.magic.value == initial_magic + charged_heal_amount
 
@@ -41,7 +41,7 @@ def test_charge_does_not_amplify_damage(fixture: ChargeFixture) -> None:
 
     aura.add_spell(fixture.charge_spell)
 
-    aura.handle_event(DamageEvent(damage_amount))
+    aura.process_event(DamageEvent(damage_amount))
 
     assert aura.magic.value == initial_magic - damage_amount
 

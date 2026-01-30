@@ -17,7 +17,7 @@ class AuraFixture:
         )
 
     def set_starting_magic(self, value: float) -> None:
-        self.aura.handle_event(DamageEvent(self.aura.magic.value - value))
+        self.aura.process_event(DamageEvent(self.aura.magic.value - value))
 
 
 class CapturedSpell:

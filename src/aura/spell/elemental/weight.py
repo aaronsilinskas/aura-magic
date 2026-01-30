@@ -46,7 +46,7 @@ class WeightSpell(Spell):
         # if movement was detected above threshold, apply damage
         if self.movement_detected:
             damage = self.damage_per_second * min(elapsed_time, self.duration.remaining)
-            aura.handle_event(DamageEvent(damage))
+            aura.process_event(DamageEvent(damage))
 
         return self.duration.update(elapsed_time)
 

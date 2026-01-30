@@ -136,12 +136,12 @@ def test_pause_spell_does_not_affect_non_cast_events(pause_fixture: PauseFixture
 
     # Damage and heal events should still work
     damage_event = DamageEvent(amount=10.0)
-    aura.handle_event(damage_event)
+    aura.process_event(damage_event)
     assert damage_event.is_canceled is False
     assert aura.magic.value == initial_magic - 10.0
 
     heal_event = HealEvent(amount=5.0)
-    aura.handle_event(heal_event)
+    aura.process_event(heal_event)
     assert heal_event.is_canceled is False
     assert aura.magic.value == initial_magic - 5.0
 
@@ -200,7 +200,7 @@ def test_pause_spell_does_not_add_when_already_paused(pause_fixture: PauseFixtur
 
     # Try to cast another pause while paused
     cast_event = CastEvent(spell=new_pause)
-    aura.handle_event(cast_event)
+    aura.process_event(cast_event)
 
     # No new pause should be added
     assert len(aura.spells.get_by_class(PauseSpell)) == initial_pause_count
@@ -226,7 +226,7 @@ def test_pause_spell_allows_spell_casts_after_expiry(pause_fixture: PauseFixture
 
     # Now try to cast a spell
     cast_event = CastEvent(spell=damage_spell)
-    aura.handle_event(cast_event)
+    aura.process_event(cast_event)
 
     # Event should not be canceled
     assert cast_event.is_canceled is False

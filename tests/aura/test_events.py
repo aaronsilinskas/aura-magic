@@ -99,7 +99,7 @@ def test_event_listener_receives_damage_event(fixture):
     listener = fixture.listener
     event = DamageEvent(amount=10.0)
 
-    fixture.aura.handle_event(event)
+    fixture.aura.process_event(event)
 
     assert len(listener.events) == 1
     assert listener.was_event_received(fixture.aura, event)
@@ -110,7 +110,7 @@ def test_event_listener_receives_heal_event(fixture):
     listener = fixture.listener
     event = HealEvent(amount=15.0)
 
-    fixture.aura.handle_event(event)
+    fixture.aura.process_event(event)
 
     assert len(listener.events) == 1
     assert listener.was_event_received(fixture.aura, event)
@@ -162,7 +162,7 @@ def test_multiple_event_listeners(fixture):
     fixture.aura.event_listeners.append(listener2)
     event = DamageEvent(amount=10.0)
 
-    fixture.aura.handle_event(event)
+    fixture.aura.process_event(event)
 
     assert len(listener1.events) == 1
     assert len(listener2.events) == 1
@@ -188,7 +188,7 @@ def test_event_listener_not_called_if_event_canceled(fixture):
     fixture.aura.add_spell(canceling_spell)
 
     listener.events.clear()  # Clear AddSpellEvent
-    fixture.aura.handle_event(DamageEvent(amount=10.0))
+    fixture.aura.process_event(DamageEvent(amount=10.0))
 
     # Event was canceled, so listener should not be notified
     assert len(listener.events) == 0
@@ -202,9 +202,9 @@ def test_event_listener_receives_events_in_order(fixture):
     event2 = HealEvent(amount=5.0)
     event3 = DamageEvent(amount=3.0)
 
-    fixture.aura.handle_event(event1)
-    fixture.aura.handle_event(event2)
-    fixture.aura.handle_event(event3)
+    fixture.aura.process_event(event1)
+    fixture.aura.process_event(event2)
+    fixture.aura.process_event(event3)
 
     assert len(listener.events) == 3
     assert listener.events[0][1] is event1
@@ -217,7 +217,7 @@ def test_event_listener_can_inspect_aura_state(fixture):
     initial_magic = fixture.aura.magic.value
     listener = fixture.listener
 
-    fixture.aura.handle_event(DamageEvent(amount=10.0))
+    fixture.aura.process_event(DamageEvent(amount=10.0))
 
     # Listener receives aura reference and can check state
     aura_from_event = listener.events[0][0]

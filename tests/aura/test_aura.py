@@ -21,7 +21,7 @@ def test_magic_min_limit(fixture: AuraFixture) -> None:
 
     # Try to reduce current magic below magic.min
     damage_past_min = aura.magic.value - aura.magic.min + 50.0
-    aura.handle_event(DamageEvent(damage_past_min))
+    aura.process_event(DamageEvent(damage_past_min))
 
     # Current magic should not be allowed to go below magic.min
     assert aura.magic.value == aura.magic.min
@@ -32,7 +32,7 @@ def test_magic_max_limit(fixture: AuraFixture) -> None:
 
     # Try to exceed max magic limit
     heal_past_max = aura.magic.max.value * 10
-    aura.handle_event(HealEvent(heal_past_max))
+    aura.process_event(HealEvent(heal_past_max))
 
     # Current should not exceed max magic
     assert aura.magic.value == aura.magic.max.value
@@ -65,7 +65,7 @@ def test_handle_event_applies_damage_event(fixture: AuraFixture) -> None:
     initial_magic = aura.magic.value
     damage_amount = 150.0
 
-    aura.handle_event(DamageEvent(damage_amount))
+    aura.process_event(DamageEvent(damage_amount))
 
     assert aura.magic.value == initial_magic - damage_amount
 
@@ -76,7 +76,7 @@ def test_handle_event_applies_heal_event(fixture: AuraFixture) -> None:
     initial_magic = aura.magic.value
     heal_amount = fixture.max_magic / 4  # heal by 25%
 
-    aura.handle_event(HealEvent(heal_amount))
+    aura.process_event(HealEvent(heal_amount))
 
     assert aura.magic.value == initial_magic + heal_amount
 
@@ -95,7 +95,7 @@ def test_handle_event_cancellation(fixture: AuraFixture) -> None:
 
     aura.add_spell(CancelingSpell())
 
-    aura.handle_event(DamageEvent(damage_amount))
+    aura.process_event(DamageEvent(damage_amount))
 
     assert aura.magic.value == initial_magic  # Magic value should remain unchanged
 

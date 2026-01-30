@@ -11,6 +11,6 @@ class IgniteSpell(Spell):
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
         damage = self.damage_per_second * min(elapsed_time, self.duration.remaining)
-        aura.handle_event(DamageEvent(damage))
+        aura.process_event(DamageEvent(damage))
 
         return self.duration.update(elapsed_time)

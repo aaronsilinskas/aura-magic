@@ -37,7 +37,7 @@ def test_weight_applies_damage_on_movement(fixture: WeightFixture) -> None:
     aura.add_spell(fixture.weight_spell)
 
     # Simulate acceleration event above threshold
-    aura.handle_event(fixture.accel_above_threshold_event)
+    aura.process_event(fixture.accel_above_threshold_event)
 
     # Update the aura for 0.5 seconds
     aura.update(0.5)
@@ -54,8 +54,8 @@ def test_weight_no_damage_below_threshold(fixture: WeightFixture) -> None:
     aura.add_spell(fixture.weight_spell)
 
     # Simulate acceleration event above but then below threshold
-    aura.handle_event(fixture.accel_above_threshold_event)
-    aura.handle_event(fixture.accel_under_threshold_event)
+    aura.process_event(fixture.accel_above_threshold_event)
+    aura.process_event(fixture.accel_under_threshold_event)
 
     # Update the aura for 1 second
     aura.update(1.0)
@@ -71,7 +71,7 @@ def test_weight_expires_after_duration(fixture: WeightFixture) -> None:
     aura.add_spell(fixture.weight_spell)
 
     # Simulate acceleration event above threshold
-    aura.handle_event(fixture.accel_above_threshold_event)
+    aura.process_event(fixture.accel_above_threshold_event)
 
     # Update the aura past the duration of the weight spell
     aura.update(fixture.duration + 1)

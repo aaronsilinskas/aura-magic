@@ -8,6 +8,6 @@ class AmbientMagicRegenSpell(Spell):
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
         heal_amount = self.amount_per_second * elapsed_time
-        aura.handle_event(HealEvent(heal_amount))
+        aura.process_event(HealEvent(heal_amount))
 
         return False  # Don't remove this spell
