@@ -2,7 +2,7 @@ import random
 
 import pytest
 from aura.aura import DamageEvent, HealEvent, Spell, SpellTags
-from aura.spells import VulnerableSpell
+from aura.spell.elemental.vulnerable import VulnerableSpell
 from conftest import AuraFixture
 
 

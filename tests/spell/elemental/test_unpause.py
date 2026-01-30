@@ -1,8 +1,8 @@
 import pytest
-from aura.spell.pause import PauseSpell
-from aura.spell.unpause import UnpauseSpell
-from aura.spells import IgniteSpell
-from tests.conftest import AuraFixture
+from aura.spell.elemental.pause import PauseSpell
+from aura.spell.elemental.unpause import UnpauseSpell
+from aura.spell.elemental.ignite import IgniteSpell
+from conftest import AuraFixture
 
 
 class UnpauseFixture(AuraFixture):

@@ -1,7 +1,7 @@
 import math
 from aura.aura import Aura, AuraEvent, DamageEvent, Spell, SpellTags
-from aura.spell.elements import ElementTags
-from aura.spells import Duration
+from aura.spell.elemental.elements import ElementTags
+from aura.values import Duration
 
 
 GRAVITY: float = 9.81  # m/s²

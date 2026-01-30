@@ -1,6 +1,7 @@
 import random
 import pytest
-from aura.spells import EarthShieldSpell, AirSliceSpell
+from aura.spell.elemental.earth_shield import EarthShieldSpell
+from aura.spell.elemental.air_slice import AirSliceSpell
 from conftest import AuraFixture
 
 

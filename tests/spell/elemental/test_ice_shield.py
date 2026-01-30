@@ -1,7 +1,9 @@
 import random
 import pytest
 from aura.caster import CastType
-from aura.spells import IceShieldSpell, AirSliceSpell, FreezeSpell
+from aura.spell.elemental.ice_shield import IceShieldSpell
+from aura.spell.elemental.air_slice import AirSliceSpell
+from aura.spell.elemental.freeze import FreezeSpell
 from conftest import AuraFixture, MockCaster
 
 

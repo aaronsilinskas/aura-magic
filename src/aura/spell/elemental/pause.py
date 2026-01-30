@@ -1,5 +1,5 @@
 from aura.aura import Aura, AuraEvent, CastEvent, Spell, SpellTags
-from aura.spell.elements import ElementTags
+from aura.spell.elemental.elements import ElementTags
 from aura.values import Duration, ValueModifier
 
 

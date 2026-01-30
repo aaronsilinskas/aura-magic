@@ -1,0 +1,27 @@
+from aura.aura import Aura, AuraEvent, DamageEvent, Spell, SpellTags
+from aura.spell.elemental.elements import ElementTags
+from aura.values import Counter, Duration
+
+
+class EarthShieldSpell(Spell):
+    """Resists incoming damage for a number of hits or duration."""
+
+    def __init__(self, reduction: float, max_hits: int, duration: float) -> None:
+        super().__init__([SpellTags.BUFF, SpellTags.SHIELD, ElementTags.EARTH])
+        self.duration = Duration(duration)
+        self.reduction = max(0, min(reduction, 1))
+        self.hits = Counter(max=max_hits)
+
+    def update(self, aura: Aura, elapsed_time: float) -> bool:
+        if self.duration.update(elapsed_time):
+            return True
+
+        return self.hits.is_max
+
+    def modify_event(self, aura: Aura, event: AuraEvent) -> None:
+        if self.duration.is_expired or self.hits.is_max:
+            return
+
+        if isinstance(event, DamageEvent):
+            event.amount *= 1 - self.reduction
+            self.hits.increment()

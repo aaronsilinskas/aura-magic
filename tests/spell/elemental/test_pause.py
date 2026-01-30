@@ -1,8 +1,8 @@
 import pytest
-import aura
-from aura.spell.pause import PauseSpell
-from aura.spells import AirSliceSpell, IgniteSpell
-from aura.aura import AddSpellEvent, CastEvent
+from aura.spell.elemental.pause import PauseSpell
+from aura.spell.elemental.air_slice import AirSliceSpell
+from aura.spell.elemental.ignite import IgniteSpell
+from aura.aura import CastEvent
 from conftest import AuraFixture, MockEventListener
 
 

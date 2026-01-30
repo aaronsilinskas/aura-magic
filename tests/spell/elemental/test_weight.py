@@ -1,5 +1,5 @@
 import pytest
-from aura.spell.weight import GRAVITY, AccelerationEvent, WeightSpell
+from aura.spell.elemental.weight import GRAVITY, AccelerationEvent, WeightSpell
 from conftest import AuraFixture
 
 

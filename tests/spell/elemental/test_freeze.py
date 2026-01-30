@@ -1,5 +1,5 @@
 import pytest
-from aura.spells import FreezeSpell
+from aura.spell.elemental.freeze import FreezeSpell
 from conftest import AuraFixture
 
 

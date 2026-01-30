@@ -1,5 +1,5 @@
 import pytest
-from aura.spells import AirSliceSpell
+from aura.spell.elemental.air_slice import AirSliceSpell
 from conftest import AuraFixture
 
 

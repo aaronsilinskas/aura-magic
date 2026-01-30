@@ -1,6 +1,6 @@
 from aura.aura import Aura, Spell, SpellTags
-from aura.spell.elements import ElementTags
-from aura.spell.pause import PauseSpell
+from aura.spell.elemental.elements import ElementTags
+from aura.spell.elemental.pause import PauseSpell
 
 
 class UnpauseSpell(Spell):

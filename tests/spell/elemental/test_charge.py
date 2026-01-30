@@ -1,6 +1,6 @@
 import pytest
 from aura.aura import DamageEvent, HealEvent
-from aura.spells import ChargeSpell
+from aura.spell.elemental.charge import ChargeSpell
 from conftest import AuraFixture
 
 

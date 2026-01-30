@@ -1,6 +1,6 @@
 import pytest
 import random
-from aura.spells import AmbientMagicRegenSpell
+from aura.spell.ambient_magic_regen import AmbientMagicRegenSpell
 from conftest import AuraFixture
 
 
