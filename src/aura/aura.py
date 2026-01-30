@@ -13,7 +13,10 @@ class Spell:
         return iter(self._tags)
 
     def start(self, aura: "Aura") -> None:
-        """Called when the spell is added to the aura. Can be used to set up initial state."""
+        """Called when the spell is added to the aura. Can be used to set up initial state.
+        Note: This is mainly used for passive modifiers like cast delay or resistances that are
+        removed when the spell is stopped. Do not apply damage, healing, or other immediate
+        effects here."""
         pass
 
     def update(self, aura: "Aura", elapsed_time: float) -> bool:
