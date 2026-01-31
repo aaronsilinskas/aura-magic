@@ -1,3 +1,9 @@
+try:
+    from typing import Type, TypeVar
+
+    T = TypeVar("T")
+except ImportError:
+    pass
 from aura.values import MinMaxValue, ValueModifiers, ValueWithModifiers
 
 
@@ -120,9 +126,14 @@ class Spells:
         """Finds spells by a specific tag."""
         return [spell for spell in self._spells if tag in spell.tags]
 
-    def get_by_class(self, cls: type) -> list[Spell]:
+    def get_by_class(self, cls: Type[T]) -> list[T]:
         """Finds spells by their class type."""
-        return [spell for spell in self._spells if isinstance(spell, cls)]
+        matching = list[T]()
+        for spell in self._spells:
+            if isinstance(spell, cls):
+                matching.append(spell)
+
+        return matching
 
     def __len__(self) -> int:
         return len(self._spells)
