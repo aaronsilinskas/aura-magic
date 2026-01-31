@@ -26,6 +26,10 @@ class Duration:
 
         return self.is_expired
 
+    def reset(self) -> None:
+        """Resets the elapsed time to zero."""
+        self._elapsed = 0.0
+
     @property
     def length(self) -> float:
         """The total length of the duration."""
@@ -98,14 +102,20 @@ class ValueModifiers:
         if self._modifiers_changed:
             self._modifiers_changed()
 
-    def add(self, modifier: ValueModifier) -> None:
-        """Adds a modifier to the list and triggers the callback.
+    def add(self, modifier: ValueModifier) -> bool:
+        """Adds a modifier to the list if it is not already present and triggers the callback.
 
         Args:
             modifier: The modifier to add.
+        Returns:
+            True if the modifier was added, False if it was already present.
         """
-        self._modifiers.append(modifier)
-        self._notify_modifiers_changed()
+        if modifier not in self._modifiers:
+            self._modifiers.append(modifier)
+            self._notify_modifiers_changed()
+            return True
+
+        return False
 
     def remove(self, modifier: ValueModifier) -> None:
         """Removes a modifier from the list and triggers the callback.

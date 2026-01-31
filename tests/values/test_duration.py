@@ -51,6 +51,20 @@ def test_update_beyond_expiration():
     assert duration.is_expired is True
 
 
+def test_reset():
+    duration = Duration(length=10.0)
+    duration.update(5.0)
+
+    assert duration.elapsed == 5.0
+    assert duration.remaining == 5.0
+
+    duration.reset()
+
+    assert duration.elapsed == 0.0
+    assert duration.remaining == 10.0
+    assert duration.is_expired is False
+
+
 def test_zero_length_duration():
     duration = Duration(length=0.0)
 

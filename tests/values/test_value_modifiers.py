@@ -58,6 +58,19 @@ def test_add_triggers_callback(mock_callback):
     mock_callback.assert_called_once()
 
 
+def test_add_duplicate_modifier(mock_callback):
+    """Test that adding a duplicate modifier does not add it again."""
+    mgr = ValueModifiers(mock_callback)
+    modifier = ValueModifier(1.0, 1.0)
+
+    added_first_time = mgr.add(modifier)
+    added_second_time = mgr.add(modifier)
+
+    assert added_first_time is True
+    assert added_second_time is False
+    assert len(mgr) == 1
+
+
 def test_remove(mock_callback):
     """Test that removing a modifier removes it from the modifiers list."""
     mgr = ValueModifiers(mock_callback)
