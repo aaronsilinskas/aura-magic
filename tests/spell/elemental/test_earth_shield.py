@@ -70,3 +70,12 @@ def test_earth_shield_removed_after_expiry(
     assert (
         shield_fixture.shield_spell not in aura.spells
     ), "Earth Shield should expire after duration"
+
+
+def test_earth_shield_scale(shield_fixture: EarthShieldFixture) -> None:
+    scale_factor = 0.5
+    original_reduction = shield_fixture.damage_reduction
+
+    shield_fixture.shield_spell.scale(scale_factor)
+
+    assert shield_fixture.shield_spell.reduction == original_reduction * scale_factor

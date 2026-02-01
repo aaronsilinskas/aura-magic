@@ -80,6 +80,17 @@ def test_ice_shield_removed_after_expiry(
     ), "Ice Shield should expire after duration"
 
 
+def test_ice_shield_scale(shield_fixture: IceShieldFixture) -> None:
+    scale_factor = 2.0
+    original_reduction = shield_fixture.damage_reduction
+
+    shield_fixture.shield_spell.scale(scale_factor)
+
+    # Reduction should be clamped to max 1.0
+    expected_reduction = min(1.0, original_reduction * scale_factor)
+    assert shield_fixture.shield_spell.reduction == expected_reduction
+
+
 def test_ice_shield_casts_freeze_on_max_hits(shield_fixture: IceShieldFixture) -> None:
     aura = shield_fixture.aura
 

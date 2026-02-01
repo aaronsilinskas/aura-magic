@@ -115,3 +115,12 @@ def test_regen_stays_after_max_magic(regen_fixture: RegenFixture) -> None:
     assert aura.magic.value == pytest.approx(aura.magic.max.value)
     # Spell should still be active
     assert regen_fixture.regen_spell in aura.spells
+
+
+def test_regen_scale(regen_fixture: RegenFixture) -> None:
+    scale_factor = 2.0
+    original_rate = regen_fixture.regen_rate
+
+    regen_fixture.regen_spell.scale(scale_factor)
+
+    assert regen_fixture.regen_spell.regen_rate == original_rate * scale_factor

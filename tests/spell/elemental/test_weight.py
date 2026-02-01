@@ -78,3 +78,12 @@ def test_weight_expires_after_duration(fixture: WeightFixture) -> None:
 
     # The weight spell should be expired and removed
     assert fixture.weight_spell not in aura.spells
+
+
+def test_weight_scale(fixture: WeightFixture) -> None:
+    scale_factor = 3.0
+    original_dps = fixture.damage_per_second
+
+    fixture.weight_spell.scale(scale_factor)
+
+    assert fixture.weight_spell.damage_per_second == original_dps * scale_factor

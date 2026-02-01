@@ -41,3 +41,12 @@ def test_air_slice_multiple_hits(slice_fixture: SliceFixture) -> None:
     # Both spells should deal damage
     assert aura.magic.value == aura.magic.max.value - (slice_fixture.slice_damage * 2)
     assert len(aura.spells) == 0  # Both spells should be removed
+
+
+def test_air_slice_scale(slice_fixture: SliceFixture) -> None:
+    scale_factor = 2.0
+    original_damage = slice_fixture.slice_damage
+
+    slice_fixture.slice_spell.scale(scale_factor)
+
+    assert slice_fixture.slice_spell.damage == original_damage * scale_factor

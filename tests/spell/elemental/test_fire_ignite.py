@@ -62,3 +62,12 @@ def test_fire_ignite_no_damage_after_duration(ignite_fixture: IgniteFixture) -> 
 
     # All damage applied over duration should be appied, but no more
     assert aura.magic.value == aura.magic.max.value - ignite_fixture.total_damage
+
+
+def test_fire_ignite_scale(ignite_fixture: IgniteFixture) -> None:
+    scale_factor = 0.5
+    original_dps = ignite_fixture.ignite_dps
+
+    ignite_fixture.ignite_spell.scale(scale_factor)
+
+    assert ignite_fixture.ignite_spell.damage_per_second == original_dps * scale_factor

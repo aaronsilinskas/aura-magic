@@ -118,3 +118,12 @@ def test_vulnerable_removed_after_expiry(fixture: VulnerableFixture) -> None:
     aura.update(fixture.duration + 1)
 
     assert fixture.vulnerable_spell not in aura.spells
+
+
+def test_vulnerable_scale(fixture: VulnerableFixture) -> None:
+    scale_factor = 1.5
+    original_multiplier = fixture.damage_multiplier
+
+    fixture.vulnerable_spell.scale(scale_factor)
+
+    assert fixture.vulnerable_spell.damage_multiplier == original_multiplier * scale_factor

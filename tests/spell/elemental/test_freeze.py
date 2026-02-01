@@ -54,3 +54,12 @@ def test_freeze_spell_removal_restores_cast_delay(fixture: FreezeFixture) -> Non
 
     # cast delay should be restored to original
     assert aura.cast_delay == original_delay
+
+
+def test_freeze_scale(fixture: FreezeFixture) -> None:
+    scale_factor = 1.5
+    original_modifier = fixture.cast_delay_modifier
+
+    fixture.freeze_spell.scale(scale_factor)
+
+    assert fixture.freeze_spell.cast_delay_modifier == original_modifier * scale_factor

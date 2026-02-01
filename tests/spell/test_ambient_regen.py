@@ -32,3 +32,12 @@ def test_magic_regen_over_time_max(regen_fixture: RegenFixture) -> None:
     assert aura.magic.value == regen_fixture.starting_magic + (
         regen_fixture.regen_per_second * duration
     )
+
+
+def test_ambient_magic_regen_scale(regen_fixture: RegenFixture) -> None:
+    scale_factor = 3.0
+    original_rate = regen_fixture.regen_per_second
+
+    regen_fixture.regen_spell.scale(scale_factor)
+
+    assert regen_fixture.regen_spell.amount_per_second == original_rate * scale_factor

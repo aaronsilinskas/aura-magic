@@ -56,3 +56,12 @@ def test_charge_expires_after_duration(fixture: ChargeFixture) -> None:
 
     # The charge spell should be expired and removed
     assert fixture.charge_spell not in aura.spells
+
+
+def test_charge_scale(fixture: ChargeFixture) -> None:
+    scale_factor = 2.0
+    original_multiplier = fixture.healing_multiplier
+
+    fixture.charge_spell.scale(scale_factor)
+
+    assert fixture.charge_spell.healing_multiplier == original_multiplier * scale_factor
