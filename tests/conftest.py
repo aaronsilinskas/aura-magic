@@ -16,9 +16,6 @@ class AuraFixture:
             cast_delay=self.cast_delay,
         )
 
-    def set_starting_magic(self, value: float) -> None:
-        self.aura.process_event(DamageEvent(self.aura.magic.value - value))
-
 
 class CapturedSpell:
     def __init__(self, spell: Spell, cast_type: str) -> None:

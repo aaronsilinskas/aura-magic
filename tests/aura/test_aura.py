@@ -72,7 +72,7 @@ def test_handle_event_applies_damage_event(fixture: AuraFixture) -> None:
 
 def test_handle_event_applies_heal_event(fixture: AuraFixture) -> None:
     aura = fixture.aura
-    fixture.set_starting_magic(fixture.max_magic / 2)
+    aura.magic.value = fixture.max_magic / 2
     initial_magic = aura.magic.value
     heal_amount = fixture.max_magic / 4  # heal by 25%
 

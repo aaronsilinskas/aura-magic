@@ -7,7 +7,7 @@ from conftest import AuraFixture
 class ChargeFixture(AuraFixture):
     def __init__(self) -> None:
         super().__init__()
-        self.set_starting_magic(self.max_magic / 4)  # Start at 25% magic
+        self.aura.magic.value = self.max_magic / 4  # Start at 25% magic
         self.healing_multiplier = 1.5  # 150% healing
         self.duration = 10.0
         self.charge_spell = ChargeSpell(

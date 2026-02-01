@@ -8,7 +8,7 @@ class RegenFixture(AuraFixture):
     def __init__(self) -> None:
         super().__init__()
         self.starting_magic = self.aura.magic.max.value / 2
-        self.set_starting_magic(self.starting_magic)
+        self.aura.magic.value = self.starting_magic
         self.regen_per_second: float = round(random.uniform(1.0, 5.0))
         self.regen_spell: AmbientMagicRegenSpell = AmbientMagicRegenSpell(
             amount_per_second=self.regen_per_second
