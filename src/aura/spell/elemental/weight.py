@@ -53,3 +53,6 @@ class WeightSpell(Spell):
     def modify_event(self, aura: "Aura", event: AuraEvent) -> None:
         if isinstance(event, AccelerationEvent):
             self.movement_detected = event.accel_magnitude > self.acceleration_threshold
+
+    def scale(self, factor: float) -> None:
+        self.damage_per_second *= factor

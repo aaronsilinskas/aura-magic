@@ -15,3 +15,6 @@ class UnpauseSpell(Spell):
             aura.remove_spell(spell)
 
         return True  # Remove immediately after application
+
+    def scale(self, factor: float) -> None:
+        pass  # No scaling for instant removal spell

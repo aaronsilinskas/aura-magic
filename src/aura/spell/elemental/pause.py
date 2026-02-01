@@ -77,3 +77,7 @@ class PauseSpell(Spell):
         else:
             # Cancel all non-pause spell casts while paused
             event.is_canceled = True
+
+    def scale(self, factor: float) -> None:
+        new_length = self.duration.length * factor
+        self.duration.length = new_length

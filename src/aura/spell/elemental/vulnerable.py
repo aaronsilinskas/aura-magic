@@ -26,3 +26,7 @@ class VulnerableSpell(Spell):
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
         if not self.shield_spells_removed and isinstance(event, DamageEvent):
             event.amount *= self.damage_multiplier
+
+    def scale(self, factor: float) -> None:
+        self.damage_multiplier *= factor
+        self.damage_multiplier = max(1.0, self.damage_multiplier)

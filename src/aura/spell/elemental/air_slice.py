@@ -11,3 +11,6 @@ class AirSliceSpell(Spell):
         aura.process_event(DamageEvent(self.damage))
 
         return True  # Remove after one application
+
+    def scale(self, factor: float) -> None:
+        self.damage *= factor

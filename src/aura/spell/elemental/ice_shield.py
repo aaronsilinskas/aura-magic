@@ -53,3 +53,7 @@ class IceShieldSpell(Spell):
         self._caster.cast_spell(
             self._freeze_spell, cast_type=CastType.AREA_OF_EFFECT
         )  # Cast type can be arbitrary here
+
+    def scale(self, factor: float) -> None:
+        self.reduction *= factor
+        self.reduction = max(0, min(self.reduction, 1))

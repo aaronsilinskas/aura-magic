@@ -25,3 +25,7 @@ class EarthShieldSpell(Spell):
         if isinstance(event, DamageEvent):
             event.amount *= 1 - self.reduction
             self.hits.increment()
+
+    def scale(self, factor: float) -> None:
+        self.reduction *= factor
+        self.reduction = max(0, min(self.reduction, 1))

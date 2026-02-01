@@ -22,3 +22,7 @@ class FreezeSpell(Spell):
 
     def stop(self, aura: Aura) -> None:
         aura.cast_delay.modifiers.remove(self._modifier)
+
+    def scale(self, factor: float) -> None:
+        self.cast_delay_modifier *= factor
+        self._modifier.multiplier = self.cast_delay_modifier

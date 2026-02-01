@@ -37,6 +37,10 @@ class Spell:
         """Modify an incoming event if needed, will only be called for active spells."""
         pass
 
+    def scale(self, factor: float) -> None:
+        """Scales the spell's effectiveness by the given factor, either reducing or increasing its impact."""
+        raise NotImplementedError()
+
 
 class SpellTags:
     SHIELD = "SHIELD"

@@ -22,3 +22,6 @@ class RegenSpell(Spell):
         aura.magic.value += regen_amount
 
         return self.duration.update(elapsed_time)
+
+    def scale(self, factor: float) -> None:
+        self.regen_rate *= factor

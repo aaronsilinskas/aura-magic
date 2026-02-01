@@ -35,6 +35,15 @@ class Duration:
         """The total length of the duration."""
         return self._length
 
+    @length.setter
+    def length(self, value: float) -> None:
+        """Sets the total length of the duration.
+
+        Args:
+            value: The new length of the duration.
+        """
+        self._length = value
+
     @property
     def elapsed(self) -> float:
         """The time elapsed since the start of the duration."""
@@ -79,6 +88,15 @@ class ValueModifier:
     def multiplier(self) -> float:
         """Returns the multiplier."""
         return self._multiplier
+
+    @multiplier.setter
+    def multiplier(self, value: float) -> None:
+        """Sets the multiplier.
+
+        Args:
+            value: The new multiplier value.
+        """
+        self._multiplier = value
 
     @property
     def duration(self) -> Duration:

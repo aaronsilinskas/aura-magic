@@ -41,3 +41,38 @@ def test_value_modifier_update_accumulation():
     mod.update(3.0)
     assert mod.duration.elapsed == 10.0
     assert mod.update(1.0) is True
+
+
+def test_value_modifier_multiplier_setter():
+    """Test that multiplier can be changed via setter."""
+    mod = ValueModifier(multiplier=2.0, duration=10.0)
+    assert mod.multiplier == 2.0
+
+    mod.multiplier = 3.5
+    assert mod.multiplier == 3.5
+
+
+def test_value_modifier_multiplier_setter_with_zero():
+    """Test that multiplier can be set to zero."""
+    mod = ValueModifier(multiplier=2.0, duration=10.0)
+    mod.multiplier = 0.0
+    assert mod.multiplier == 0.0
+
+
+def test_value_modifier_multiplier_setter_with_negative():
+    """Test that multiplier can be set to negative values."""
+    mod = ValueModifier(multiplier=2.0, duration=10.0)
+    mod.multiplier = -1.5
+    assert mod.multiplier == -1.5
+
+
+def test_value_modifier_multiplier_setter_preserves_duration():
+    """Test that changing multiplier doesn't affect duration."""
+    mod = ValueModifier(multiplier=2.0, duration=10.0)
+    mod.update(3.0)
+
+    mod.multiplier = 4.0
+
+    assert mod.multiplier == 4.0
+    assert mod.duration.elapsed == 3.0
+    assert mod.duration.length == 10.0

@@ -11,3 +11,6 @@ class AmbientMagicRegenSpell(Spell):
         aura.process_event(HealEvent(heal_amount))
 
         return False  # Don't remove this spell
+
+    def scale(self, factor: float) -> None:
+        self.amount_per_second *= factor

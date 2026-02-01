@@ -106,3 +106,45 @@ def test_exact_expiration_boundary():
     duration.update(0.01)
     assert duration.elapsed == pytest.approx(5.0)
     assert duration.is_expired is True
+
+
+def test_length_setter():
+    duration = Duration(length=10.0)
+    assert duration.length == 10.0
+
+    duration.length = 20.0
+    assert duration.length == 20.0
+    assert duration.remaining == 20.0
+
+
+def test_length_setter_changes_remaining():
+    duration = Duration(length=10.0)
+    duration.update(5.0)
+    assert duration.elapsed == 5.0
+    assert duration.remaining == 5.0
+
+    # Increase length
+    duration.length = 15.0
+    assert duration.remaining == 10.0
+    assert duration.is_expired is False
+
+
+def test_length_setter_can_cause_expiration():
+    duration = Duration(length=10.0)
+    duration.update(5.0)
+    assert duration.is_expired is False
+
+    # Decrease length below elapsed time
+    duration.length = 3.0
+    assert duration.remaining == 0.0
+    assert duration.is_expired is True
+
+
+def test_length_setter_negative_remaining():
+    duration = Duration(length=10.0)
+    duration.update(8.0)
+    
+    # Set length to less than elapsed
+    duration.length = 5.0
+    assert duration.remaining == 0.0  # Should not be negative
+    assert duration.is_expired is True

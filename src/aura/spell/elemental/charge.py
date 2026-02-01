@@ -15,3 +15,6 @@ class ChargeSpell(Spell):
     def modify_event(self, aura: Aura, event: AuraEvent) -> None:
         if isinstance(event, HealEvent):
             event.amount *= self.healing_multiplier
+
+    def scale(self, factor: float) -> None:
+        self.healing_multiplier *= factor

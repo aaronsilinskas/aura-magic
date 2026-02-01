@@ -14,3 +14,6 @@ class IgniteSpell(Spell):
         aura.process_event(DamageEvent(damage))
 
         return self.duration.update(elapsed_time)
+
+    def scale(self, factor: float) -> None:
+        self.damage_per_second *= factor
