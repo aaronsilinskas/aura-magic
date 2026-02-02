@@ -1,4 +1,5 @@
 import pytest
+from aura.aura import Spell
 from aura.spell.elemental.air_slice import AirSliceSpell
 from conftest import AuraFixture
 
@@ -49,5 +50,5 @@ def test_air_slice_level(slice_fixture: SliceFixture) -> None:
 
     slice_fixture.slice_spell.level = level
 
-    expected_damage = original_damage * (1 + 0.25 * (level - 1))
+    expected_damage = Spell.LEVEL_SCALER.scale_value(original_damage, level)
     assert slice_fixture.slice_spell.damage == expected_damage

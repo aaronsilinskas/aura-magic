@@ -1,4 +1,5 @@
 import pytest
+from aura.aura import Spell
 from aura.spell.elemental.weight import GRAVITY, AccelerationEvent, WeightSpell
 from conftest import AuraFixture
 
@@ -86,5 +87,5 @@ def test_weight_level(fixture: WeightFixture) -> None:
 
     fixture.weight_spell.level = level
 
-    expected_dps = original_dps * (1 + 0.25 * (level - 1))
+    expected_dps = Spell.LEVEL_SCALER.scale_value(original_dps, level)
     assert fixture.weight_spell.damage_per_second == expected_dps

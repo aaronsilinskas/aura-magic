@@ -1,4 +1,5 @@
 import pytest
+from aura.aura import Spell
 from aura.spell.elemental.freeze import FreezeSpell
 from conftest import AuraFixture
 
@@ -62,5 +63,5 @@ def test_freeze_level(fixture: FreezeFixture) -> None:
 
     fixture.freeze_spell.level = level
 
-    expected_modifier = original_modifier * (1 + 0.25 * (level - 1))
+    expected_modifier = Spell.LEVEL_SCALER.scale_value(original_modifier, level)
     assert fixture.freeze_spell.cast_delay_modifier == expected_modifier

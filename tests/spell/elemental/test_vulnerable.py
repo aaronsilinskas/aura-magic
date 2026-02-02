@@ -1,7 +1,7 @@
 import random
 
 import pytest
-from aura.aura import DamageEvent, HealEvent, SpellTags
+from aura.aura import DamageEvent, HealEvent, Spell, SpellTags
 from aura.spell.elemental.earth_shield import EarthShieldSpell
 from aura.spell.elemental.vulnerable import VulnerableSpell
 from conftest import AuraFixture
@@ -126,5 +126,5 @@ def test_vulnerable_level(fixture: VulnerableFixture) -> None:
 
     fixture.vulnerable_spell.level = level
 
-    expected_multiplier = original_multiplier * (1 + 0.25 * (level - 1))
+    expected_multiplier = Spell.LEVEL_SCALER.scale_value(original_multiplier, level)
     assert fixture.vulnerable_spell.damage_multiplier == expected_multiplier

@@ -1,5 +1,6 @@
 import pytest
 import random
+from aura.aura import Spell
 from aura.spell.elemental.ignite import IgniteSpell
 from conftest import AuraFixture
 
@@ -70,5 +71,5 @@ def test_fire_ignite_level(ignite_fixture: IgniteFixture) -> None:
 
     ignite_fixture.ignite_spell.level = level
 
-    expected_dps = original_dps * (1 + 0.25 * (level - 1))
+    expected_dps = Spell.LEVEL_SCALER.scale_value(original_dps, level)
     assert ignite_fixture.ignite_spell.damage_per_second == expected_dps

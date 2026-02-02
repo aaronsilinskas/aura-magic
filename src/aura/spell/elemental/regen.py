@@ -25,4 +25,4 @@ class RegenSpell(Spell):
         return self.duration.update(elapsed_time)
 
     def _update_level(self, level: int) -> None:
-        self.regen_rate = Spell.scale_to_level(self._base_regen_rate, level)
+        self.regen_rate = Spell.LEVEL_SCALER.scale_value(self._base_regen_rate, level)

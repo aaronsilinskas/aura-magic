@@ -1,5 +1,5 @@
 import pytest
-from aura.aura import DamageEvent, HealEvent
+from aura.aura import DamageEvent, HealEvent, Spell
 from aura.spell.elemental.charge import ChargeSpell
 from conftest import AuraFixture
 
@@ -64,5 +64,5 @@ def test_charge_level(fixture: ChargeFixture) -> None:
 
     fixture.charge_spell.level = level
 
-    expected_multiplier = original_multiplier * (1 + 0.25 * (level - 1))
+    expected_multiplier = Spell.LEVEL_SCALER.scale_value(original_multiplier, level)
     assert fixture.charge_spell.healing_multiplier == expected_multiplier

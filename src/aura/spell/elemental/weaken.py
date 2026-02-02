@@ -18,5 +18,6 @@ class WeakenSpell(Spell):
             spell.level = int(spell.level * (1 - self.reduction))
 
     def _update_level(self, level: int) -> None:
-        self.reduction = Spell.scale_to_level(self._base_reduction, level)
-        self.reduction = max(0, min(self.reduction, 1))
+        self.reduction = Spell.LEVEL_SCALER.scale_percentage(
+            self._base_reduction, level
+        )

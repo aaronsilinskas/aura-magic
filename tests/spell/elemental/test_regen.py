@@ -1,5 +1,6 @@
 import pytest
 import random
+from aura.aura import Spell
 from aura.spell.elemental.regen import RegenSpell
 from conftest import AuraFixture
 
@@ -123,5 +124,5 @@ def test_regen_level(regen_fixture: RegenFixture) -> None:
 
     regen_fixture.regen_spell.level = level
 
-    expected_rate = original_rate * (1 + 0.25 * (level - 1))
+    expected_rate = Spell.LEVEL_SCALER.scale_value(original_rate, level)
     assert regen_fixture.regen_spell.regen_rate == expected_rate

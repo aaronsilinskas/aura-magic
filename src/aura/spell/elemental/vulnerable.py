@@ -29,7 +29,7 @@ class VulnerableSpell(Spell):
             event.amount *= self.damage_multiplier
 
     def _update_level(self, level: int) -> None:
-        self.damage_multiplier = Spell.scale_to_level(
+        self.damage_multiplier = Spell.LEVEL_SCALER.scale_value(
             self._base_damage_multiplier, level
         )
         self.damage_multiplier = max(1.0, self.damage_multiplier)

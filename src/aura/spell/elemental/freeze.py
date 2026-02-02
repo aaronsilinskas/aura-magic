@@ -25,7 +25,7 @@ class FreezeSpell(Spell):
         aura.cast_delay.modifiers.remove(self._modifier)
 
     def _update_level(self, level: int) -> None:
-        self.cast_delay_modifier = Spell.scale_to_level(
+        self.cast_delay_modifier = Spell.LEVEL_SCALER.scale_value(
             self._base_cast_delay_modifier, level
         )
         self._modifier.multiplier = self.cast_delay_modifier

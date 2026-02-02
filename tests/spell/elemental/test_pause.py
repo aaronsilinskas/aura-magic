@@ -2,7 +2,7 @@ import pytest
 from aura.spell.elemental.pause import PauseSpell
 from aura.spell.elemental.air_slice import AirSliceSpell
 from aura.spell.elemental.ignite import IgniteSpell
-from aura.aura import CastEvent
+from aura.aura import CastEvent, Spell
 from conftest import AuraFixture, MockEventListener
 
 
@@ -85,7 +85,7 @@ def test_pause_level(pause_fixture: PauseFixture):
 
     pause_spell.level = level
 
-    expected_duration = original_duration * (1 + 0.25 * (level - 1))
+    expected_duration = Spell.LEVEL_SCALER.scale_value(original_duration, level)
     assert pause_spell.duration.length == expected_duration
 
 

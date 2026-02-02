@@ -14,6 +14,6 @@ class AmbientMagicRegenSpell(Spell):
         return False  # Don't remove this spell
 
     def _update_level(self, level: int) -> None:
-        self.amount_per_second = Spell.scale_to_level(
+        self.amount_per_second = Spell.LEVEL_SCALER.scale_value(
             self._base_amount_per_second, level
         )

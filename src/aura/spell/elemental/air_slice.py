@@ -14,4 +14,4 @@ class AirSliceSpell(Spell):
         return True  # Remove after one application
 
     def _update_level(self, level: int) -> None:
-        self.damage = Spell.scale_to_level(self._base_damage, level)
+        self.damage = Spell.LEVEL_SCALER.scale_value(self._base_damage, level)

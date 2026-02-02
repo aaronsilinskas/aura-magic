@@ -1,5 +1,6 @@
 import random
 import pytest
+from aura.aura import Spell
 from aura.spell.elemental.earth_shield import EarthShieldSpell
 from aura.spell.elemental.air_slice import AirSliceSpell
 from conftest import AuraFixture
@@ -79,5 +80,5 @@ def test_earth_shield_level(shield_fixture: EarthShieldFixture) -> None:
     shield_fixture.shield_spell.level = level
 
     # Reduction should be clamped to max 1.0
-    expected_reduction = min(1.0, original_reduction * (1 + 0.25 * (level - 1)))
+    expected_reduction = Spell.LEVEL_SCALER.scale_percentage(original_reduction, level)
     assert shield_fixture.shield_spell.reduction == expected_reduction

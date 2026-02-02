@@ -56,6 +56,6 @@ class WeightSpell(Spell):
             self.movement_detected = event.accel_magnitude > self.acceleration_threshold
 
     def _update_level(self, level: int) -> None:
-        self.damage_per_second = Spell.scale_to_level(
+        self.damage_per_second = Spell.LEVEL_SCALER.scale_value(
             self._base_damage_per_second, level
         )

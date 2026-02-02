@@ -18,6 +18,6 @@ class ChargeSpell(Spell):
             event.amount *= self.healing_multiplier
 
     def _update_level(self, level: int) -> None:
-        self.healing_multiplier = Spell.scale_to_level(
+        self.healing_multiplier = Spell.LEVEL_SCALER.scale_value(
             self._base_healing_multiplier, level
         )

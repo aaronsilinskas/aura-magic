@@ -80,5 +80,5 @@ class PauseSpell(Spell):
             event.is_canceled = True
 
     def _update_level(self, level: int) -> None:
-        new_length = Spell.scale_to_level(self._base_duration, level)
+        new_length = Spell.LEVEL_SCALER.scale_value(self._base_duration, level)
         self.duration.length = new_length

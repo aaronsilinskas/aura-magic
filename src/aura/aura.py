@@ -7,13 +7,39 @@ except ImportError:
 from aura.values import MinMaxValue, ValueWithModifiers
 
 
+class SpellLevelScaler:
+    """Scaling logic for spell levels."""
+
+    def __init__(
+        self, value_coefficient: float = 0.25, percentage_coefficient: float = 0.05
+    ) -> None:
+        """Initializes the coefficients for this level scaler.
+
+        Args:
+            value_coefficient (float, optional): The coefficient for scaling values. Defaults to 0.25.
+            percentage_coefficient (float, optional): The coefficient for scaling percentages. Defaults to 0.05.
+        """
+        self._value_coefficient = max(value_coefficient, 0)
+        self._percentage_coefficient = max(percentage_coefficient, 0)
+
+    def scale_value(self, value: float, level: int) -> float:
+        """Scales a value based on the spell's level and the value coefficient.
+        Increases the base value by the value coefficient per level.
+        """
+        return value * (1 + self._value_coefficient * (level - 1))
+
+    def scale_percentage(self, base_percentage: float, level: int) -> float:
+        """Scales a percentage value based on the spell's level and the percentage coefficient.
+        Adds the percentage coefficient to the base percentage per level.
+        Clamps the value between 0 and 1."""
+        return min(base_percentage + self._percentage_coefficient * (level - 1), 1)
+
+
 class Spell:
     """Base class for all spells."""
 
-    @staticmethod
-    def scale_to_level(value: float, level: int) -> float:
-        """Scales a value based on the spell's level using a 25% increment per level."""
-        return value * (1 + 0.25 * (level - 1))
+    LEVEL_SCALER = SpellLevelScaler()
+    """Shared level scaler for all spells. Overridable if needed."""
 
     def __init__(self, tags: list[str]) -> None:
         self.name: str = self.__class__.__name__.replace("Spell", "")
