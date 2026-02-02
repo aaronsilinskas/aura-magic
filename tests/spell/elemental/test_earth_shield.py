@@ -72,10 +72,12 @@ def test_earth_shield_removed_after_expiry(
     ), "Earth Shield should expire after duration"
 
 
-def test_earth_shield_scale(shield_fixture: EarthShieldFixture) -> None:
-    scale_factor = 0.5
+def test_earth_shield_level(shield_fixture: EarthShieldFixture) -> None:
+    level = 2
     original_reduction = shield_fixture.damage_reduction
 
-    shield_fixture.shield_spell.scale(scale_factor)
+    shield_fixture.shield_spell.level = level
 
-    assert shield_fixture.shield_spell.reduction == original_reduction * scale_factor
+    # Reduction should be clamped to max 1.0
+    expected_reduction = min(1.0, original_reduction * (1 + 0.25 * (level - 1)))
+    assert shield_fixture.shield_spell.reduction == expected_reduction

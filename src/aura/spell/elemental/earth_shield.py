@@ -9,7 +9,8 @@ class EarthShieldSpell(Spell):
     def __init__(self, reduction: float, max_hits: int, duration: float) -> None:
         super().__init__([SpellTags.BUFF, SpellTags.SHIELD, ElementTags.EARTH])
         self.duration = Duration(duration)
-        self.reduction = max(0, min(reduction, 1))
+        self._base_reduction = max(0, min(reduction, 1))
+        self.reduction = self._base_reduction
         self.hits = Counter(max=max_hits)
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -26,6 +27,6 @@ class EarthShieldSpell(Spell):
             event.amount *= 1 - self.reduction
             self.hits.increment()
 
-    def scale(self, factor: float) -> None:
-        self.reduction *= factor
+    def _update_level(self, level: int) -> None:
+        self.reduction = Spell.scale_to_level(self._base_reduction, level)
         self.reduction = max(0, min(self.reduction, 1))

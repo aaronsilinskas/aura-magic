@@ -9,6 +9,7 @@ class FreezeSpell(Spell):
     def __init__(self, duration: float, cast_delay_modifier: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.ICE])
         self.duration = Duration(duration)
+        self._base_cast_delay_modifier = cast_delay_modifier
         self.cast_delay_modifier = cast_delay_modifier
         self._modifier = ValueModifier(
             self.cast_delay_modifier, duration=self.duration.length
@@ -23,6 +24,8 @@ class FreezeSpell(Spell):
     def stop(self, aura: Aura) -> None:
         aura.cast_delay.modifiers.remove(self._modifier)
 
-    def scale(self, factor: float) -> None:
-        self.cast_delay_modifier *= factor
+    def _update_level(self, level: int) -> None:
+        self.cast_delay_modifier = Spell.scale_to_level(
+            self._base_cast_delay_modifier, level
+        )
         self._modifier.multiplier = self.cast_delay_modifier

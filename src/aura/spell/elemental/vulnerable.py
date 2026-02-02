@@ -10,7 +10,8 @@ class VulnerableSpell(Spell):
     def __init__(self, damage_multiplier: float, duration: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.DARK])
         self.duration = Duration(duration)
-        self.damage_multiplier: float = max(1.0, damage_multiplier)
+        self._base_damage_multiplier: float = max(1.0, damage_multiplier)
+        self.damage_multiplier: float = self._base_damage_multiplier
         self.shield_spells_removed: bool = False
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -27,6 +28,8 @@ class VulnerableSpell(Spell):
         if not self.shield_spells_removed and isinstance(event, DamageEvent):
             event.amount *= self.damage_multiplier
 
-    def scale(self, factor: float) -> None:
-        self.damage_multiplier *= factor
+    def _update_level(self, level: int) -> None:
+        self.damage_multiplier = Spell.scale_to_level(
+            self._base_damage_multiplier, level
+        )
         self.damage_multiplier = max(1.0, self.damage_multiplier)

@@ -19,6 +19,7 @@ class IceShieldSpell(Spell):
         super().__init__([SpellTags.BUFF, SpellTags.SHIELD, ElementTags.ICE])
 
         self.duration = Duration(duration)
+        self._base_reduction = max(0, min(reduction, 1))
         self.reduction = max(0, min(reduction, 1))
         self.hits = Counter(max=max_hits)
         self._freeze_spell = freeze_spell
@@ -54,6 +55,6 @@ class IceShieldSpell(Spell):
             self._freeze_spell, cast_type=CastType.AREA_OF_EFFECT
         )  # Cast type can be arbitrary here
 
-    def scale(self, factor: float) -> None:
-        self.reduction *= factor
+    def _update_level(self, level: int) -> None:
+        self.reduction = Spell.scale_to_level(self._base_reduction, level)
         self.reduction = max(0, min(self.reduction, 1))

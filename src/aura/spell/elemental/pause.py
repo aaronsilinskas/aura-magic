@@ -21,6 +21,7 @@ class PauseSpell(Spell):
             duration: How long the pause lasts and the cast delay multiplier.
         """
         super().__init__(tags=[SpellTags.DEBUFF, ElementTags.TIME])
+        self._base_duration = duration
         self.duration = Duration(duration)
         self._modifier = ValueModifier(multiplier=duration, duration=duration)
 
@@ -78,6 +79,6 @@ class PauseSpell(Spell):
             # Cancel all non-pause spell casts while paused
             event.is_canceled = True
 
-    def scale(self, factor: float) -> None:
-        new_length = self.duration.length * factor
+    def _update_level(self, level: int) -> None:
+        new_length = Spell.scale_to_level(self._base_duration, level)
         self.duration.length = new_length

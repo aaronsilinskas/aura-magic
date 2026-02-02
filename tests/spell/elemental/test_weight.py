@@ -80,10 +80,11 @@ def test_weight_expires_after_duration(fixture: WeightFixture) -> None:
     assert fixture.weight_spell not in aura.spells
 
 
-def test_weight_scale(fixture: WeightFixture) -> None:
-    scale_factor = 3.0
+def test_weight_level(fixture: WeightFixture) -> None:
+    level = 3
     original_dps = fixture.damage_per_second
 
-    fixture.weight_spell.scale(scale_factor)
+    fixture.weight_spell.level = level
 
-    assert fixture.weight_spell.damage_per_second == original_dps * scale_factor
+    expected_dps = original_dps * (1 + 0.25 * (level - 1))
+    assert fixture.weight_spell.damage_per_second == expected_dps

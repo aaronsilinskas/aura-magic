@@ -64,10 +64,11 @@ def test_fire_ignite_no_damage_after_duration(ignite_fixture: IgniteFixture) -> 
     assert aura.magic.value == aura.magic.max.value - ignite_fixture.total_damage
 
 
-def test_fire_ignite_scale(ignite_fixture: IgniteFixture) -> None:
-    scale_factor = 0.5
+def test_fire_ignite_level(ignite_fixture: IgniteFixture) -> None:
+    level = 2
     original_dps = ignite_fixture.ignite_dps
 
-    ignite_fixture.ignite_spell.scale(scale_factor)
+    ignite_fixture.ignite_spell.level = level
 
-    assert ignite_fixture.ignite_spell.damage_per_second == original_dps * scale_factor
+    expected_dps = original_dps * (1 + 0.25 * (level - 1))
+    assert ignite_fixture.ignite_spell.damage_per_second == expected_dps

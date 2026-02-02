@@ -76,16 +76,17 @@ def test_pause_spell_does_not_expire_before_duration(pause_fixture: PauseFixture
     assert pause_fixture.pause_spell in aura.spells
 
 
-def test_pause_scale(pause_fixture: PauseFixture):
-    """Test that PauseSpell scale method updates duration."""
+def test_pause_level(pause_fixture: PauseFixture):
+    """Test that PauseSpell level updates duration."""
     aura = pause_fixture.aura
-    scale_factor = 2.0
+    level = 2
     original_duration = pause_fixture.pause_duration
     pause_spell = PauseSpell(duration=original_duration)
 
-    pause_spell.scale(scale_factor)
+    pause_spell.level = level
 
-    assert pause_spell.duration.length == original_duration * scale_factor
+    expected_duration = original_duration * (1 + 0.25 * (level - 1))
+    assert pause_spell.duration.length == expected_duration
 
 
 def test_pause_spell_prevents_other_spell_casts(pause_fixture: PauseFixture):

@@ -58,10 +58,11 @@ def test_charge_expires_after_duration(fixture: ChargeFixture) -> None:
     assert fixture.charge_spell not in aura.spells
 
 
-def test_charge_scale(fixture: ChargeFixture) -> None:
-    scale_factor = 2.0
+def test_charge_level(fixture: ChargeFixture) -> None:
+    level = 2
     original_multiplier = fixture.healing_multiplier
 
-    fixture.charge_spell.scale(scale_factor)
+    fixture.charge_spell.level = level
 
-    assert fixture.charge_spell.healing_multiplier == original_multiplier * scale_factor
+    expected_multiplier = original_multiplier * (1 + 0.25 * (level - 1))
+    assert fixture.charge_spell.healing_multiplier == expected_multiplier

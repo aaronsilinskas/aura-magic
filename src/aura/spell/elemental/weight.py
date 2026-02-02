@@ -39,6 +39,7 @@ class WeightSpell(Spell):
         super().__init__([SpellTags.DEBUFF, ElementTags.GRAVITY])
         self.duration = Duration(duration)
         self.acceleration_threshold = acceleration_threshold
+        self._base_damage_per_second = damage_per_second
         self.damage_per_second = damage_per_second
         self.movement_detected = False
 
@@ -54,5 +55,7 @@ class WeightSpell(Spell):
         if isinstance(event, AccelerationEvent):
             self.movement_detected = event.accel_magnitude > self.acceleration_threshold
 
-    def scale(self, factor: float) -> None:
-        self.damage_per_second *= factor
+    def _update_level(self, level: int) -> None:
+        self.damage_per_second = Spell.scale_to_level(
+            self._base_damage_per_second, level
+        )

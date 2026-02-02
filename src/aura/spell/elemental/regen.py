@@ -14,6 +14,7 @@ class RegenSpell(Spell):
             duration: The duration of the spell in seconds.
         """
         super().__init__(tags=[SpellTags.BUFF, ElementTags.WATER])
+        self._base_regen_rate = regen_rate
         self.regen_rate = regen_rate
         self.duration = Duration(duration)
 
@@ -23,5 +24,5 @@ class RegenSpell(Spell):
 
         return self.duration.update(elapsed_time)
 
-    def scale(self, factor: float) -> None:
-        self.regen_rate *= factor
+    def _update_level(self, level: int) -> None:
+        self.regen_rate = Spell.scale_to_level(self._base_regen_rate, level)

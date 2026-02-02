@@ -7,6 +7,7 @@ class IgniteSpell(Spell):
     def __init__(self, damage_per_second: float, duration: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.FIRE])
         self.duration = Duration(duration)
+        self._base_damage_per_second = damage_per_second
         self.damage_per_second = damage_per_second
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -15,5 +16,7 @@ class IgniteSpell(Spell):
 
         return self.duration.update(elapsed_time)
 
-    def scale(self, factor: float) -> None:
-        self.damage_per_second *= factor
+    def _update_level(self, level: int) -> None:
+        self.damage_per_second = Spell.scale_to_level(
+            self._base_damage_per_second, level
+        )

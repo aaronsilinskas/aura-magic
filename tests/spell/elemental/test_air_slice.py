@@ -43,10 +43,11 @@ def test_air_slice_multiple_hits(slice_fixture: SliceFixture) -> None:
     assert len(aura.spells) == 0  # Both spells should be removed
 
 
-def test_air_slice_scale(slice_fixture: SliceFixture) -> None:
-    scale_factor = 2.0
+def test_air_slice_level(slice_fixture: SliceFixture) -> None:
+    level = 2
     original_damage = slice_fixture.slice_damage
 
-    slice_fixture.slice_spell.scale(scale_factor)
+    slice_fixture.slice_spell.level = level
 
-    assert slice_fixture.slice_spell.damage == original_damage * scale_factor
+    expected_damage = original_damage * (1 + 0.25 * (level - 1))
+    assert slice_fixture.slice_spell.damage == expected_damage

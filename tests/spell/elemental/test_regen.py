@@ -117,10 +117,11 @@ def test_regen_stays_after_max_magic(regen_fixture: RegenFixture) -> None:
     assert regen_fixture.regen_spell in aura.spells
 
 
-def test_regen_scale(regen_fixture: RegenFixture) -> None:
-    scale_factor = 2.0
+def test_regen_level(regen_fixture: RegenFixture) -> None:
+    level = 2
     original_rate = regen_fixture.regen_rate
 
-    regen_fixture.regen_spell.scale(scale_factor)
+    regen_fixture.regen_spell.level = level
 
-    assert regen_fixture.regen_spell.regen_rate == original_rate * scale_factor
+    expected_rate = original_rate * (1 + 0.25 * (level - 1))
+    assert regen_fixture.regen_spell.regen_rate == expected_rate

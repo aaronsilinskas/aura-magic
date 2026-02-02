@@ -7,6 +7,7 @@ class ChargeSpell(Spell):
     def __init__(self, healing_multiplier: float, duration: float) -> None:
         super().__init__([SpellTags.BUFF, ElementTags.LIGHTNING])
         self.duration = Duration(duration)
+        self._base_healing_multiplier = healing_multiplier
         self.healing_multiplier = healing_multiplier
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
@@ -16,5 +17,7 @@ class ChargeSpell(Spell):
         if isinstance(event, HealEvent):
             event.amount *= self.healing_multiplier
 
-    def scale(self, factor: float) -> None:
-        self.healing_multiplier *= factor
+    def _update_level(self, level: int) -> None:
+        self.healing_multiplier = Spell.scale_to_level(
+            self._base_healing_multiplier, level
+        )

@@ -4,19 +4,21 @@ try:
     T = TypeVar("T")
 except ImportError:
     pass
-from aura.values import MinMaxValue, ValueModifiers, ValueWithModifiers
+from aura.values import MinMaxValue, ValueWithModifiers
 
 
 class Spell:
     """Base class for all spells."""
 
+    @staticmethod
+    def scale_to_level(value: float, level: int) -> float:
+        """Scales a value based on the spell's level using a 25% increment per level."""
+        return value * (1 + 0.25 * (level - 1))
+
     def __init__(self, tags: list[str]) -> None:
         self.name: str = self.__class__.__name__.replace("Spell", "")
         self._tags: list[str] = tags
-
-    @property
-    def tags(self):
-        return iter(self._tags)
+        self._level: int = 1
 
     def start(self, aura: "Aura") -> None:
         """Called when the spell is added to the aura. Can be used to set up initial state.
@@ -33,13 +35,28 @@ class Spell:
         """Called when the spell is removed from the aura. Can be used to clean up state."""
         pass
 
-    def modify_event(self, aura: Aura, event: AuraEvent) -> None:
+    def modify_event(self, aura: "Aura", event: AuraEvent) -> None:
         """Modify an incoming event if needed, will only be called for active spells."""
         pass
 
-    def scale(self, factor: float) -> None:
-        """Scales the spell's effectiveness by the given factor, either reducing or increasing its impact."""
+    def _update_level(self, level: int) -> None:
+        """Called when the spell's level is changed, allowing for adjustments based on level."""
         raise NotImplementedError()
+
+    @property
+    def tags(self):
+        return iter(self._tags)
+
+    @property
+    def level(self) -> int:
+        """Returns the current level of the spell."""
+        return self._level
+
+    @level.setter
+    def level(self, value: int) -> None:
+        """Sets the level of the spell, affecting its potency."""
+        self._level = max(1, value)
+        self._update_level(self._level)
 
 
 class SpellTags:

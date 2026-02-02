@@ -34,10 +34,11 @@ def test_magic_regen_over_time_max(regen_fixture: RegenFixture) -> None:
     )
 
 
-def test_ambient_magic_regen_scale(regen_fixture: RegenFixture) -> None:
-    scale_factor = 3.0
+def test_ambient_magic_regen_level(regen_fixture: RegenFixture) -> None:
+    level = 3
     original_rate = regen_fixture.regen_per_second
 
-    regen_fixture.regen_spell.scale(scale_factor)
+    regen_fixture.regen_spell.level = level
 
-    assert regen_fixture.regen_spell.amount_per_second == original_rate * scale_factor
+    expected_rate = original_rate * (1 + 0.25 * (level - 1))
+    assert regen_fixture.regen_spell.amount_per_second == expected_rate

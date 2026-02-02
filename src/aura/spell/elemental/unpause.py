@@ -16,5 +16,5 @@ class UnpauseSpell(Spell):
 
         return True  # Remove immediately after application
 
-    def scale(self, factor: float) -> None:
+    def _update_level(self, level: int) -> None:
         pass  # No scaling for instant removal spell

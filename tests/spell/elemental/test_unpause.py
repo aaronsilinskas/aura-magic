@@ -65,7 +65,7 @@ def test_unpause_spell_with_other_spells(fixture: UnpauseFixture) -> None:
     assert other_spell in aura.spells  # Other spell should remain
 
 
-def test_unpause_scale(fixture: UnpauseFixture) -> None:
-    # UnpauseSpell has no scalable parameters, just verify it doesn't error
-    fixture.unpause_spell.scale(2.0)
+def test_unpause_level(fixture: UnpauseFixture) -> None:
+    # UnpauseSpell has no level-dependent parameters, just verify it doesn't error
+    fixture.unpause_spell.level = 2
     # If we get here without exception, the test passes
