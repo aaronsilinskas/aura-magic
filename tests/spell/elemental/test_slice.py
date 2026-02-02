@@ -1,6 +1,6 @@
 import pytest
 from aura.aura import Spell
-from aura.spell.elemental.air_slice import AirSliceSpell
+from aura.spell.elemental.slice import SliceSpell
 from conftest import AuraFixture
 
 
@@ -9,7 +9,7 @@ class SliceFixture(AuraFixture):
         super().__init__()
         # Deal one-third of max magic as damage
         self.slice_damage: float = self.aura.magic.max.value // 3
-        self.slice_spell: AirSliceSpell = AirSliceSpell(damage=self.slice_damage)
+        self.slice_spell: SliceSpell = SliceSpell(damage=self.slice_damage)
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def slice_fixture() -> SliceFixture:
     return SliceFixture()
 
 
-def test_air_slice_instant_damage(slice_fixture: SliceFixture) -> None:
+def test_slice_instant_damage(slice_fixture: SliceFixture) -> None:
     aura = slice_fixture.aura
 
     aura.add_spell(slice_fixture.slice_spell)
@@ -28,12 +28,12 @@ def test_air_slice_instant_damage(slice_fixture: SliceFixture) -> None:
     assert slice_fixture.slice_spell not in aura.spells
 
 
-def test_air_slice_multiple_hits(slice_fixture: SliceFixture) -> None:
+def test_slice_multiple_hits(slice_fixture: SliceFixture) -> None:
     aura = slice_fixture.aura
 
     # Add two slice spells
-    slice_spell_1 = AirSliceSpell(damage=slice_fixture.slice_damage)
-    slice_spell_2 = AirSliceSpell(damage=slice_fixture.slice_damage)
+    slice_spell_1 = SliceSpell(damage=slice_fixture.slice_damage)
+    slice_spell_2 = SliceSpell(damage=slice_fixture.slice_damage)
 
     aura.add_spell(slice_spell_1)
     aura.add_spell(slice_spell_2)
@@ -44,7 +44,7 @@ def test_air_slice_multiple_hits(slice_fixture: SliceFixture) -> None:
     assert len(aura.spells) == 0  # Both spells should be removed
 
 
-def test_air_slice_level(slice_fixture: SliceFixture) -> None:
+def test_slice_level(slice_fixture: SliceFixture) -> None:
     level = 2
     original_damage = slice_fixture.slice_damage
 

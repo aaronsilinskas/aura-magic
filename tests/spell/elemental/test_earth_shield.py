@@ -2,7 +2,7 @@ import random
 import pytest
 from aura.aura import Spell
 from aura.spell.elemental.earth_shield import EarthShieldSpell
-from aura.spell.elemental.air_slice import AirSliceSpell
+from aura.spell.elemental.slice import SliceSpell
 from conftest import AuraFixture
 
 
@@ -18,7 +18,7 @@ class EarthShieldFixture(AuraFixture):
             duration=self.duration,
         )
         self.damage = self.aura.magic.max.value / 2  # Damage 1/2 of magic
-        self.damage_spell = AirSliceSpell(damage=self.damage)
+        self.damage_spell = SliceSpell(damage=self.damage)
         self.damage_after_shield = self.damage * (1 - self.damage_reduction)
 
 

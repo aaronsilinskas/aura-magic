@@ -2,7 +2,7 @@ from aura.aura import Aura, DamageEvent, Spell, SpellTags
 from aura.spell.elemental.elements import ElementTags
 
 
-class AirSliceSpell(Spell):
+class SliceSpell(Spell):
     def __init__(self, damage: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.AIR])
         self._base_damage = damage

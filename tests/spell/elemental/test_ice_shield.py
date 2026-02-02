@@ -3,7 +3,7 @@ import pytest
 from aura.aura import Spell
 from aura.caster import CastType
 from aura.spell.elemental.ice_shield import IceShieldSpell
-from aura.spell.elemental.air_slice import AirSliceSpell
+from aura.spell.elemental.slice import SliceSpell
 from aura.spell.elemental.freeze import FreezeSpell
 from conftest import AuraFixture, MockCaster
 
@@ -26,7 +26,7 @@ class IceShieldFixture(AuraFixture):
         )
 
         self.damage = self.aura.magic.max.value / 4  # Damage 1/4 of magic
-        self.damage_spell = AirSliceSpell(damage=self.damage)
+        self.damage_spell = SliceSpell(damage=self.damage)
         self.damage_after_shield = self.damage * (1 - self.damage_reduction)
 
 

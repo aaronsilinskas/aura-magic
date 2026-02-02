@@ -1,6 +1,6 @@
 import pytest
 from aura.spell.elemental.pause import PauseSpell
-from aura.spell.elemental.air_slice import AirSliceSpell
+from aura.spell.elemental.slice import SliceSpell
 from aura.spell.elemental.ignite import IgniteSpell
 from aura.aura import CastEvent, Spell
 from conftest import AuraFixture, MockEventListener
@@ -92,7 +92,7 @@ def test_pause_level(pause_fixture: PauseFixture):
 def test_pause_spell_prevents_other_spell_casts(pause_fixture: PauseFixture):
     """Test that PauseSpell prevents casting other spells."""
     aura = pause_fixture.aura
-    damage_spell = AirSliceSpell(damage=10.0)
+    damage_spell = SliceSpell(damage=10.0)
 
     # Add the Pause spell to the aura
     aura.add_spell(pause_fixture.pause_spell)
@@ -167,7 +167,7 @@ def test_pause_spell_prevents_multiple_spell_types(pause_fixture: PauseFixture):
     pause_fixture.event_listener.events.clear()
 
     # Try casting different types of spells
-    air_slice = AirSliceSpell(damage=10.0)
+    air_slice = SliceSpell(damage=10.0)
     ignite = IgniteSpell(damage_per_second=5.0, duration=3.0)
 
     aura.cast_spell(air_slice)
@@ -230,7 +230,7 @@ def test_pause_spell_zero_duration():
 def test_pause_spell_allows_spell_casts_after_expiry(pause_fixture: PauseFixture):
     """Test that spell casts are allowed after pause expires."""
     aura = pause_fixture.aura
-    damage_spell = AirSliceSpell(damage=10.0)
+    damage_spell = SliceSpell(damage=10.0)
 
     aura.add_spell(pause_fixture.pause_spell)
 
