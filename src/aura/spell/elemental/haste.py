@@ -4,7 +4,10 @@ from aura.values import Duration, ValueModifier
 
 
 class HasteSpell(Spell):
-    """Decreases the delay between spell casts for a duration by a percentage."""
+    """Decreases the delay between spell casts for a duration by a percentage.
+
+    Level scaling: Decreases the cast delay.
+    """
 
     def __init__(self, duration: float, cast_delay_percentage: float) -> None:
         super().__init__([SpellTags.BUFF, ElementTags.AIR])

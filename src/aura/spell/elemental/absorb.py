@@ -5,7 +5,10 @@ from aura.values import Duration
 
 class AbsorbSpell(Spell):
     """A spell that absorbs debuff spells, and expires after a duration. The number of
-    debuff spells it can absorb increases with level."""
+    debuff spells it can absorb increases with level.
+    
+    Level scaling: Increases the number of debuff spells that can be absorbed.
+    """
 
     def __init__(self, duration: float) -> None:
         super().__init__([SpellTags.BUFF, ElementTags.GRAVITY])

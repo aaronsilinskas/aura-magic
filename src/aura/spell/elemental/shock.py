@@ -4,7 +4,10 @@ from aura.values import Duration
 
 
 class ShockSpell(Spell):
-    """Reduces healing by a percentage for a duration."""
+    """Reduces healing by a percentage for a duration.
+    
+    Level scaling: Increases the heal reduction percentage.
+    """
 
     def __init__(self, heal_reduction_percentage: float, duration: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.LIGHTNING])

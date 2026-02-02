@@ -3,7 +3,10 @@ from aura.spell.elemental.elements import ElementTags
 
 
 class WarmthSpell(Spell):
-    """Remove debuffs from the water and ice elements."""
+    """Remove debuffs from the water and ice elements.
+    
+    Level scaling: No scaling (instant removal effect).
+    """
 
     def __init__(self) -> None:
         super().__init__([SpellTags.BUFF])

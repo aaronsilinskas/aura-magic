@@ -7,7 +7,10 @@ from aura.values import Counter, Duration
 
 class IceShieldSpell(Spell):
     """Resists incoming damage for a number of hits or duration. Casts Freeze in an AOE
-    when max hits is exceeded."""
+    when max hits is exceeded.
+
+    Level scaling: Increases the damage reduction percentage up to 100%.
+    """
 
     def __init__(
         self,

@@ -33,7 +33,10 @@ class AccelerationEvent(AuraEvent):
 
 
 class WeightSpell(Spell):
-    """Deals damage over time when acceleration above a threshold is detected."""
+    """Deals damage over time when acceleration above a threshold is detected.
+    
+    Level scaling: Increases the damage per second.
+    """
 
     def __init__(
         self, acceleration_threshold: float, damage_per_second: float, duration: float

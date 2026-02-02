@@ -2,6 +2,11 @@ from aura.aura import Aura, HealEvent, Spell, SpellTags
 
 
 class AmbientMagicRegenSpell(Spell):
+    """Provides continuous ambient magic regeneration per second.
+    
+    Level scaling: Increases the regeneration amount per second.
+    """
+    
     def __init__(self, amount_per_second: float) -> None:
         super().__init__([SpellTags.BUFF])
         self._base_amount_per_second: float = amount_per_second

@@ -4,7 +4,10 @@ from aura.spell.elemental.pause import PauseSpell
 
 
 class UnpauseSpell(Spell):
-    """Removes the Pause effect from the target Auras immediately."""
+    """Removes the Pause effect from the target Auras immediately.
+    
+    Level scaling: No scaling (instant removal effect).
+    """
 
     def __init__(self) -> None:
         super().__init__([SpellTags.BUFF, ElementTags.TIME])

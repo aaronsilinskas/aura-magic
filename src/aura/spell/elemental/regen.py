@@ -4,7 +4,10 @@ from aura.values import Duration
 
 
 class RegenSpell(Spell):
-    """A spell that provides magic regeneration over time."""
+    """A spell that provides magic regeneration over time.
+    
+    Level scaling: Increases the regeneration rate per second.
+    """
 
     def __init__(self, regen_rate: float, duration: float):
         """Initialize a RegenSpell.

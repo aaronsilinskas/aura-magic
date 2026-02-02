@@ -4,7 +4,10 @@ from aura.values import Duration, ValueModifier
 
 
 class FreezeSpell(Spell):
-    """Increases the delay between spell casts for a duration."""
+    """Increases the delay between spell casts for a duration.
+    
+    Level scaling: Increases the cast delay multiplier.
+    """
 
     def __init__(self, duration: float, cast_delay_modifier: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.ICE])
