@@ -1,4 +1,5 @@
 from aura.aura import Aura, AuraEvent, CastEvent, Spell, SpellTags
+from aura.spell.elemental.elements import ElementTags
 from aura.values import Duration
 
 
@@ -9,7 +10,7 @@ class WeakenSpell(Spell):
     """
 
     def __init__(self, reduction: float, duration: float) -> None:
-        super().__init__(tags=[SpellTags.DEBUFF])
+        super().__init__(tags=[SpellTags.DEBUFF, ElementTags.WATER])
         self._base_reduction = max(0, min(reduction, 1))
         self.reduction = self._base_reduction
         self.duration = Duration(duration)
