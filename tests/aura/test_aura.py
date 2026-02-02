@@ -148,6 +148,60 @@ def test_get_spells_by_tag(fixture: AuraFixture) -> None:
     assert debuff_spell in debuff_spells
 
 
+def test_get_spells_by_multiple_tags(fixture: AuraFixture) -> None:
+    aura = fixture.aura
+
+    class ShieldSpell(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[SpellTags.SHIELD])
+
+    class ShieldBuffSpell(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[SpellTags.SHIELD, SpellTags.BUFF])
+
+    class BuffSpell(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[SpellTags.BUFF])
+
+    shield_spell = ShieldSpell()
+    shield_buff_spell = ShieldBuffSpell()
+    buff_spell = BuffSpell()
+
+    aura.add_spell(shield_spell)
+    aura.add_spell(shield_buff_spell)
+    aura.add_spell(buff_spell)
+
+    # Get spells with both SHIELD and BUFF tags
+    shield_buff_spells = list(aura.spells.get_by_tag(SpellTags.SHIELD, SpellTags.BUFF))
+    assert shield_buff_spells == [shield_buff_spell]
+
+    # Get spells with only SHIELD tag
+    shield_spells = list(aura.spells.get_by_tag(SpellTags.SHIELD))
+    assert set(shield_spells) == {shield_spell, shield_buff_spell}
+
+    # Get spells with only BUFF tag
+    buff_spells = list(aura.spells.get_by_tag(SpellTags.BUFF))
+    assert set(buff_spells) == {shield_buff_spell, buff_spell}
+
+
+def test_get_spells_by_tag_empty(fixture: AuraFixture) -> None:
+    aura = fixture.aura
+
+    class BuffSpell(Spell):
+        def __init__(self) -> None:
+            super().__init__(tags=[SpellTags.BUFF])
+
+    aura.add_spell(BuffSpell())
+
+    # No tags specified should return empty list
+    spells = list(aura.spells.get_by_tag())
+    assert spells == []
+
+    # Non-existent tag should return empty list
+    spells = list(aura.spells.get_by_tag(SpellTags.DEBUFF))
+    assert spells == []
+
+
 def test_get_spells_by_class(fixture: AuraFixture) -> None:
     aura = fixture.aura
 

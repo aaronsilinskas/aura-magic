@@ -169,9 +169,13 @@ class Spells:
         """Finds a spell by its name."""
         return [spell for spell in self._spells if spell.name == name]
 
-    def get_by_tag(self, tag: str) -> list[Spell]:
-        """Finds spells by a specific tag."""
-        return [spell for spell in self._spells if tag in spell.tags]
+    def get_by_tag(self, *tags: str) -> list[Spell]:
+        """Finds spells that have all of the specified tags."""
+        if not tags:
+            return []
+        return [
+            spell for spell in self._spells if all(tag in spell.tags for tag in tags)
+        ]
 
     def get_by_class(self, cls: Type[T]) -> list[T]:
         """Finds spells by their class type."""
