@@ -12,7 +12,7 @@ class ShadowSpell(Spell):
         self.duration = Duration(duration)  # in seconds
 
     def update(self, aura: Aura, elapsed_time: float) -> bool:
-        return self.duration.update(elapsed_time)5
+        return self.duration.update(elapsed_time)
 
     def _update_level(self, level: int) -> None:
         self.duration.length = Spell.LEVEL_SCALER.scale_value(
