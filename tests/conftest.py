@@ -1,7 +1,7 @@
 import random
 
 from aura import Aura
-from aura.aura import AuraEvent, DamageEvent, EventListener, Spell
+from aura.aura import AuraEvent, EventListener, Spell
 from aura.caster import Caster
 
 
@@ -15,6 +15,16 @@ class AuraFixture:
             max_magic=self.max_magic,
             cast_delay=self.cast_delay,
         )
+
+
+class NoopSpell(Spell):
+    """Base class for test spells with default implementations of abstract methods."""
+
+    def update(self, aura, elapsed_time: float) -> bool:
+        return False
+
+    def _update_level(self, level: int) -> None:
+        pass
 
 
 class CapturedSpell:
