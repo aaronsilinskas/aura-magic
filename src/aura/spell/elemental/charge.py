@@ -4,6 +4,8 @@ from aura.values import Duration
 
 
 class ChargeSpell(Spell):
+    """Increase the effectiveness of healing spells for a duration."""
+
     def __init__(self, healing_multiplier: float, duration: float) -> None:
         super().__init__([SpellTags.BUFF, ElementTags.LIGHTNING])
         self.duration = Duration(duration)

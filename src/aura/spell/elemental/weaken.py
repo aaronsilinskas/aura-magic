@@ -3,6 +3,8 @@ from aura.values import Duration
 
 
 class WeakenSpell(Spell):
+    """Reduces the level of spells cast by the target for a duration."""
+
     def __init__(self, reduction: float, duration: float) -> None:
         super().__init__(tags=[SpellTags.DEBUFF])
         self._base_reduction = max(0, min(reduction, 1))

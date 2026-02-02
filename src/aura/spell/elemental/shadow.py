@@ -4,7 +4,8 @@ from aura.values import Duration
 
 
 class ShadowSpell(Spell):
-    """A spell that temporarily turns the selected spell visual indicators black until the duration expires."""
+    """A spell that temporarily turns the selected spell visual indicators black until the duration expires.
+    Visual effects must listen for this spell and implement the effect."""
 
     def __init__(self, duration: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.DARK])

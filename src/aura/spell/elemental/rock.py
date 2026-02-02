@@ -3,6 +3,8 @@ from aura.spell.elemental.elements import ElementTags
 
 
 class RockSpell(Spell):
+    """Instantly damages the target for a specified amount."""
+
     def __init__(self, damage: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.EARTH])
         self._base_damage = damage
