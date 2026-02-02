@@ -9,8 +9,8 @@ class FreezeSpell(Spell):
     def __init__(self, duration: float, cast_delay_modifier: float) -> None:
         super().__init__([SpellTags.DEBUFF, ElementTags.ICE])
         self.duration = Duration(duration)
-        self._base_cast_delay_modifier = cast_delay_modifier
-        self.cast_delay_modifier = cast_delay_modifier
+        self._base_cast_delay_modifier = max(cast_delay_modifier, 1.0)
+        self.cast_delay_modifier = self._base_cast_delay_modifier
         self._modifier = ValueModifier(
             self.cast_delay_modifier, duration=self.duration.length
         )
