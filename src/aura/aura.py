@@ -4,6 +4,7 @@ try:
     T = TypeVar("T")
 except ImportError:
     pass
+
 from aura.values import MinMaxValue, ValueWithModifiers
 
 
@@ -61,7 +62,7 @@ class Spell:
         """Called when the spell is removed from the aura. Can be used to clean up state."""
         pass
 
-    def modify_event(self, aura: "Aura", event: AuraEvent) -> None:
+    def modify_event(self, aura: "Aura", event: "AuraEvent") -> None:
         """Modify an incoming event if needed, will only be called for active spells."""
         pass
 
@@ -177,9 +178,9 @@ class Spells:
             spell for spell in self._spells if all(tag in spell.tags for tag in tags)
         ]
 
-    def get_by_class(self, cls: Type[T]) -> list[T]:
+    def get_by_class(self, cls: "Type[T]") -> "list[T]":
         """Finds spells by their class type."""
-        matching = list[T]()
+        matching = list()
         for spell in self._spells:
             if isinstance(spell, cls):
                 matching.append(spell)

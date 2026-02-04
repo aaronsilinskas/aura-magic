@@ -1,4 +1,7 @@
-from typing import Callable
+try:
+    from typing import Callable
+except ImportError:
+    pass
 
 
 class Duration:
